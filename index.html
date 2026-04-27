@@ -57,6 +57,7 @@
   <script src="script.js" defer></script>
 </head>
 <body data-page="home">
+  <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
   <header class="site-header">
     <div class="container">
       <div class="site-bar">
@@ -92,14 +93,18 @@
 
   <main class="page-main">
     <section class="page-hero" data-section="hero">
+      <div class="hero-pattern" aria-hidden="true"></div>
       <div class="container">
         <div class="page-hero-grid">
           <div class="page-copy">
             <span class="eyebrow">Area + time + vibe</span>
-            <h1 class="page-title">Stop overthinking what to do in Seoul.</h1>
-            <p class="page-lead">Miro turns where you are, how much time you have, and the mood you&rsquo;re in into a tighter next move instead of another pile of tabs and generic lists.</p>
-            <p>Try a sample answer first. If it feels useful, join early access and help shape the real product.</p>
-            <p class="form-note">Miro is opening through small early-access batches for people who want faster, calmer Seoul decisions.</p>
+            <h1 class="page-title">Stop overthinking what to do in <span class="accent-word">Seoul</span>.</h1>
+            <p class="page-lead">Miro turns your area, available time, and mood into one Seoul route you can start now.</p>
+            <div class="hero-signal-row" aria-label="Miro benefits">
+              <span class="signal-chip">One clear answer</span>
+              <span class="signal-chip">Seoul-ready</span>
+              <span class="signal-chip">No tab spiral</span>
+            </div>
           </div>
 
           <section class="demo-card" data-section="home-demo" aria-label="Sample Miro preview">
@@ -111,43 +116,21 @@
               </div>
 
               <form class="demo-form" data-demo-form="home">
-                <div class="demo-grid">
-                  <div class="field">
-                    <label for="demo-area">Area</label>
-                    <select id="demo-area" name="area" required>
-                      <option value="">Choose an area</option>
-                      <option value="hongdae">Hongdae</option>
-                      <option value="seongsu">Seongsu</option>
-                      <option value="itaewon">Itaewon</option>
-                      <option value="myeongdong">Myeongdong</option>
-                      <option value="jamsil">Jamsil</option>
-                    </select>
+                <div class="demo-progress" aria-label="Demo selection progress">
+                  <div class="demo-progress-head">
+                    <span class="demo-progress-count"><span data-demo-progress-current>0</span>/3 selected</span>
+                    <span class="demo-progress-label">Live sample setup</span>
                   </div>
+                  <div class="demo-progress-bar" aria-hidden="true">
+                    <span class="demo-progress-fill" data-demo-progress-fill></span>
+                  </div>
+                </div>
 
-                  <div class="field">
-                    <label for="demo-time">Time</label>
-                    <select id="demo-time" name="time" required>
-                      <option value="">Choose time</option>
-                      <option value="45_min">45 min</option>
-                      <option value="2_hours">2 hours</option>
-                      <option value="half_day">Half day</option>
-                      <option value="evening">Evening</option>
-                    </select>
-                  </div>
-
-                  <div class="field">
-                    <label for="demo-vibe">Vibe</label>
-                    <select id="demo-vibe" name="vibe" required>
-                      <option value="">Choose a vibe</option>
-                      <option value="calm">Calm</option>
-                      <option value="local">Local</option>
-                      <option value="date">Date</option>
-                      <option value="food">Food</option>
-                      <option value="design">Design</option>
-                      <option value="night">Night</option>
-                      <option value="reset">Reset</option>
-                    </select>
-                  </div>
+                <div class="demo-flow-strip" aria-label="Miro demo flow">
+                  <span data-demo-flow-step="area">Area</span>
+                  <span data-demo-flow-step="time">Time</span>
+                  <span data-demo-flow-step="vibe">Vibe</span>
+                  <strong data-demo-flow-step="answer">One clear next move</strong>
                 </div>
 
                 <div class="demo-selection" data-demo-selection hidden aria-live="polite">
@@ -156,11 +139,130 @@
                   <span class="demo-chip" data-demo-chip="vibe">Vibe: not set</span>
                 </div>
 
+                <div class="demo-choice-stack">
+                  <fieldset class="demo-choice-group" data-demo-group="area">
+                    <legend>
+                      <span class="demo-step-kicker">Step 1</span>
+                      <span>Area</span>
+                    </legend>
+                    <div class="demo-choice-grid demo-choice-grid-area">
+                      <label class="demo-choice">
+                        <input type="radio" name="area" value="hongdae" required>
+                        <span><strong>Hongdae</strong><small>Creative energy</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="area" value="seongsu" required>
+                        <span><strong>Seongsu</strong><small>Design reset</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="area" value="itaewon" required>
+                        <span><strong>Itaewon</strong><small>Global mix</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="area" value="myeongdong" required>
+                        <span><strong>Myeongdong</strong><small>Central density</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="area" value="jamsil" required>
+                        <span><strong>Jamsil</strong><small>Easy landmark</small></span>
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="demo-choice-group" data-demo-group="time">
+                    <legend>
+                      <span class="demo-step-kicker">Step 2</span>
+                      <span>Time</span>
+                    </legend>
+                    <div class="demo-choice-grid demo-choice-grid-time">
+                      <label class="demo-choice">
+                        <input type="radio" name="time" value="45_min" required>
+                        <span><strong>45 min</strong><small>Fast move</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="time" value="2_hours" required>
+                        <span><strong>2 hours</strong><small>Short route</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="time" value="half_day" required>
+                        <span><strong>Half day</strong><small>Loose plan</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="time" value="evening" required>
+                        <span><strong>Evening</strong><small>Night flow</small></span>
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="demo-choice-group" data-demo-group="vibe">
+                    <legend>
+                      <span class="demo-step-kicker">Step 3</span>
+                      <span>Vibe</span>
+                    </legend>
+                    <div class="demo-choice-grid demo-choice-grid-vibe">
+                      <label class="demo-choice">
+                        <input type="radio" name="vibe" value="calm" required>
+                        <span><strong>Calm</strong><small>Lower noise</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="vibe" value="local" required>
+                        <span><strong>Local</strong><small>Less obvious</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="vibe" value="date" required>
+                        <span><strong>Date</strong><small>Low pressure</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="vibe" value="food" required>
+                        <span><strong>Food</strong><small>Eat first</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="vibe" value="design" required>
+                        <span><strong>Design</strong><small>Visual stops</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="vibe" value="night" required>
+                        <span><strong>Night</strong><small>After dark</small></span>
+                      </label>
+                      <label class="demo-choice">
+                        <input type="radio" name="vibe" value="reset" required>
+                        <span><strong>Reset</strong><small>Easy recovery</small></span>
+                      </label>
+                    </div>
+                  </fieldset>
+                </div>
+
                 <button class="button button-primary" type="submit" data-cta="home-demo-submit">See my sample Miro answer</button>
               </form>
 
-              <div class="demo-placeholder" data-demo-placeholder>
-                Choose an area, time, and vibe to see how Miro narrows Seoul into one next move you can actually act on.
+              <div class="demo-placeholder demo-live-preview" data-demo-placeholder aria-live="polite">
+                <div class="demo-preview-head">
+                  <span>Preview forming</span>
+                  <strong data-demo-preview-title>Pick three inputs</strong>
+                </div>
+                <div class="demo-preview-grid">
+                  <div>
+                    <span>Where</span>
+                    <strong data-demo-preview-area>Waiting for area</strong>
+                  </div>
+                  <div>
+                    <span>Window</span>
+                    <strong data-demo-preview-time>Waiting for time</strong>
+                  </div>
+                  <div>
+                    <span>Feel</span>
+                    <strong data-demo-preview-vibe>Waiting for vibe</strong>
+                  </div>
+                  <div>
+                    <span>Output</span>
+                    <strong data-demo-preview-action>One next move</strong>
+                  </div>
+                </div>
+                <div class="demo-preview-tags" aria-label="Miro sample qualities">
+                  <span>Local-first</span>
+                  <span>Context-aware</span>
+                  <span>No generic lists</span>
+                </div>
               </div>
 
               <div class="demo-result" data-demo-result hidden>
@@ -170,7 +272,13 @@
                   <h3 data-demo-title></h3>
                   <p data-demo-summary></p>
                 </div>
+                <div class="demo-result-meta" aria-label="Sample route metadata">
+                  <span data-demo-estimated-time>Estimated time</span>
+                  <span>Built for Seoul decisions</span>
+                </div>
+                <div class="demo-route-summary" data-demo-route-summary aria-label="Sample route order"></div>
                 <ol class="demo-stops" data-demo-stops></ol>
+                <div class="demo-value-chips" data-demo-value-chips aria-label="Miro trust and value"></div>
                 <p class="demo-tip" data-demo-tip></p>
                 <div class="cta-row">
                   <a class="button button-primary" href="#home-signup" data-cta="home-primary-get-early-access">Get early access</a>
@@ -183,28 +291,232 @@
       </div>
     </section>
 
+    <section class="section section-tight" data-section="how-miro-works">
+      <div class="container">
+        <div class="section-heading scan-heading">
+          <span class="section-label">How Miro works</span>
+          <h2>Four inputs. One next move.</h2>
+          <p>Pick the context. Miro narrows Seoul into a compact route.</p>
+        </div>
+
+        <div class="flow-grid" aria-label="How Miro works">
+          <article class="flow-step">
+            <div class="flow-top">
+              <span class="flow-number">1</span>
+              <span class="info-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M12 21s6-5.1 6-11a6 6 0 0 0-12 0c0 5.9 6 11 6 11Z"></path>
+                  <circle cx="12" cy="10" r="2"></circle>
+                </svg>
+              </span>
+            </div>
+            <h3>Area</h3>
+            <p>Start from where you are.</p>
+          </article>
+
+          <article class="flow-step">
+            <div class="flow-top">
+              <span class="flow-number">2</span>
+              <span class="info-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <circle cx="12" cy="12" r="8"></circle>
+                  <path d="M12 8v4l3 2"></path>
+                </svg>
+              </span>
+            </div>
+            <h3>Time</h3>
+            <p>Match the route to your window.</p>
+          </article>
+
+          <article class="flow-step">
+            <div class="flow-top">
+              <span class="flow-number">3</span>
+              <span class="info-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M5 16c2.2-5.3 4.4-8 7-8s4.8 2.7 7 8"></path>
+                  <path d="M8 16h8"></path>
+                  <path d="M9 12h.01M15 12h.01"></path>
+                </svg>
+              </span>
+            </div>
+            <h3>Vibe</h3>
+            <p>Choose the mood, not a category maze.</p>
+          </article>
+
+          <article class="flow-step is-outcome">
+            <div class="flow-top">
+              <span class="flow-number">4</span>
+              <span class="info-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M5 12h13"></path>
+                  <path d="m14 7 5 5-5 5"></path>
+                </svg>
+              </span>
+            </div>
+            <h3>One clear next move</h3>
+            <p>A short route you can act on.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" data-section="why-miro">
+      <div class="container">
+        <div class="section-heading scan-heading">
+          <span class="section-label">Why Miro</span>
+          <h2>Less searching. More deciding.</h2>
+          <p>Most tools add options. Miro compresses the choice.</p>
+        </div>
+
+        <div class="compare-visual" aria-label="Miro comparison">
+          <article class="compare-card">
+            <span class="info-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <path d="m4 6 5-2 6 2 5-2v14l-5 2-6-2-5 2V6Z"></path>
+                <path d="M9 4v14M15 6v14"></path>
+              </svg>
+            </span>
+            <h3>Maps</h3>
+            <p>Too many pins</p>
+            <span class="compare-tag">High search load</span>
+          </article>
+
+          <article class="compare-card">
+            <span class="info-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <path d="M6 4h12v16H6z"></path>
+                <path d="M9 8h6M9 12h6M9 16h3"></path>
+              </svg>
+            </span>
+            <h3>Blogs</h3>
+            <p>Generic lists</p>
+            <span class="compare-tag">Hard to fit now</span>
+          </article>
+
+          <article class="compare-card">
+            <span class="info-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <path d="M7 9h10M7 13h7"></path>
+                <path d="M5 5h14v11H8l-3 3V5Z"></path>
+              </svg>
+            </span>
+            <h3>Social posts</h3>
+            <p>Hard to trust</p>
+            <span class="compare-tag">Trend-first</span>
+          </article>
+
+          <article class="compare-card is-miro">
+            <span class="info-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <path d="M5 12h9"></path>
+                <path d="m11 8 4 4-4 4"></path>
+                <path d="M17 5h2v14h-2"></path>
+              </svg>
+            </span>
+            <h3>Miro</h3>
+            <p>One tailored answer</p>
+            <span class="compare-tag">Area + time + vibe</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tight" data-section="sample-output">
+      <div class="container">
+        <div class="sample-layout">
+          <div class="section-heading scan-heading">
+            <span class="section-label">What you get</span>
+            <h2>A compact answer, not a research project.</h2>
+            <p>Each result explains why it fits and what to do first.</p>
+          </div>
+
+          <article class="sample-output-card" aria-label="Sample Miro output">
+            <div class="sample-output-head">
+              <span class="intent-meta">Sample result</span>
+              <span class="time-pill">About 2 hours</span>
+            </div>
+            <h3>Seongsu design reset</h3>
+            <p>Fits a calm afternoon when you want coffee, a walk, and one memorable local stop.</p>
+
+            <ol class="route-line">
+              <li>
+                <span class="route-index">1</span>
+                <div>
+                  <strong>Cafe street start</strong>
+                  <span>Easy first stop near Seongsu Station</span>
+                </div>
+              </li>
+              <li>
+                <span class="route-index">2</span>
+                <div>
+                  <strong>Design shop loop</strong>
+                  <span>Short walk, low planning risk</span>
+                </div>
+              </li>
+              <li>
+                <span class="route-index">3</span>
+                <div>
+                  <strong>Dinner backup nearby</strong>
+                  <span>Stay flexible if the first place is full</span>
+                </div>
+              </li>
+            </ol>
+
+            <div class="chip-row" aria-label="Trust and value signals">
+              <span>Short walk</span>
+              <span>Indoor backup</span>
+              <span>Visitor-friendly</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tight" data-section="trust-value">
+      <div class="container">
+        <div class="micro-strip" aria-label="Miro trust and value">
+          <article class="micro-card">
+            <span class="micro-dot" aria-hidden="true"></span>
+            <strong>Built for first-session decisions</strong>
+          </article>
+          <article class="micro-card">
+            <span class="micro-dot" aria-hidden="true"></span>
+            <strong>Designed for Seoul visitors</strong>
+          </article>
+          <article class="micro-card">
+            <span class="micro-dot" aria-hidden="true"></span>
+            <strong>No endless planning</strong>
+          </article>
+          <article class="micro-card">
+            <span class="micro-dot" aria-hidden="true"></span>
+            <strong>Early access</strong>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="home-signup" data-section="home-signup">
       <div class="container">
         <div class="apply-shell">
           <div class="apply-copy">
             <div class="section-heading">
               <span class="section-label">Get early access</span>
-              <h2>Start with one simple step.</h2>
-              <p>Leave your email, add a little context if you want, and Miro will reach out when the first Seoul early-access cohort opens.</p>
+              <h2>Join the first Seoul batch.</h2>
+              <p>Email is enough. Add context only if you want Miro to learn your use case.</p>
             </div>
 
-            <div class="note-list">
-              <div class="note-row">
-                <strong>Fast first step</strong>
-                <p>Email and consent are enough to get on the list.</p>
+            <div class="signup-snap" aria-label="Early access signup steps">
+              <div class="signup-snap-item">
+                <strong>1. Email</strong>
+                <span>Join the list</span>
               </div>
-              <div class="note-row">
-                <strong>Optional context</strong>
-                <p>You can add your area or use case now, and keep the rest for later if you want.</p>
+              <div class="signup-snap-item">
+                <strong>2. Context</strong>
+                <span>Optional signal</span>
               </div>
-              <div class="note-row">
-                <strong>Useful follow-up</strong>
-                <p>Miro uses that context to learn which kinds of Seoul moments people want help with first.</p>
+              <div class="signup-snap-item">
+                <strong>3. Invite</strong>
+                <span>Small cohorts</span>
               </div>
             </div>
           </div>
@@ -216,7 +528,7 @@
             data-signup-form="home"
           >
             <span class="section-label" style="margin-bottom: 0;">Free early access</span>
-            <p class="form-intro">Get notified when Miro opens and help shape a more context-aware Seoul recommendation experience.</p>
+            <p class="form-intro">Get notified when Miro opens its first Seoul preview.</p>
 
             <div data-form-fields class="form-grid">
               <div class="field">
@@ -284,13 +596,13 @@
                 <input id="home-consent" name="consent" type="checkbox" required>
                 <div class="consent-copy">
                   <label for="home-consent">I agree to receive Miro updates and early-access contact.</label>
-                  <p class="form-note">Required so Miro can follow up about launch timing and early testing.</p>
+                  <p class="form-note">Required for launch and testing updates.</p>
                 </div>
               </div>
 
               <div class="form-actions">
                 <button class="button button-primary" type="submit" data-cta="home-signup-submit">Get early access</button>
-                <p class="form-note">If you want a little more detail before signing up, the full flow is still on the <a href="apply.html" data-cta="home-apply-link">Apply page</a>.</p>
+                <p class="form-note">Need more context? Use the <a href="apply.html" data-cta="home-apply-link">Apply page</a>.</p>
                 <div class="form-status" data-form-status aria-live="polite"></div>
               </div>
             </div>
@@ -298,8 +610,8 @@
             <div class="form-success" data-form-success hidden>
               <span class="intent-meta">You&rsquo;re in</span>
               <h3>You&rsquo;re on the Miro early-access list.</h3>
-              <p>Miro saved your request for <strong data-success-email></strong>. That tells us this kind of faster Seoul decision flow is worth building.</p>
-              <p class="form-note">If you also want to signal stronger purchase intent, that secondary path is right below.</p>
+              <p>Saved for <strong data-success-email></strong>. We&rsquo;ll use this signal to shape first Seoul routes.</p>
+              <p class="form-note">Priority-interest signal is below.</p>
             </div>
           </form>
         </div>
@@ -310,15 +622,15 @@
       <div class="container">
         <div class="section-heading">
           <span class="section-label">Stronger interest</span>
-          <h2>For people already sold on the idea.</h2>
-          <p>This is a separate signal from the free path. If Miro already feels like something you would pay for, tell us now and we&rsquo;ll follow up when priority access opens.</p>
+          <h2>Already want priority?</h2>
+          <p>A separate signal for people who would pay for faster access.</p>
         </div>
 
         <div class="intent-grid">
           <article class="intent-card is-priority" id="priority-access" data-intent="priority">
             <span class="intent-meta">Secondary signal</span>
             <h3>I&rsquo;d pay for priority access.</h3>
-            <p>Use this if the sample already feels valuable and you want to signal stronger intent than a standard early-access signup.</p>
+            <p>Use this when the sample feels immediately useful.</p>
             <div class="cta-row">
               <a
                 class="button button-accent"
@@ -334,7 +646,7 @@
                 Reserve priority access
               </a>
             </div>
-            <p class="form-note" id="home-priority-note" hidden>Thanks - we noted your stronger interest. Priority access opens after the first early-access cohort.</p>
+            <p class="form-note" id="home-priority-note" hidden>Noted. Priority access opens after the first cohort.</p>
           </article>
         </div>
       </div>
@@ -344,38 +656,38 @@
       <div class="container">
         <div class="section-heading">
           <span class="section-label">Want more detail?</span>
-          <h2>Explore the product idea at your own pace.</h2>
+          <h2>Scan the rest.</h2>
         </div>
 
         <div class="link-rail">
           <div class="link-rail-item">
             <h3>About Miro</h3>
-            <p>Why Seoul can feel overwhelming and why a tighter next-move experience matters.</p>
+            <p>Problem and product angle.</p>
             <a href="about.html" data-cta="about-home">Read the story</a>
           </div>
           <div class="link-rail-item">
             <h3>How It Works</h3>
-            <p>The Miro logic in plain language: area, time, vibe, and a smaller set of choices you can act on.</p>
+            <p>Area, time, vibe, answer.</p>
             <a href="how-it-works.html" data-cta="how-home">See the model</a>
           </div>
           <div class="link-rail-item">
             <h3>Apply</h3>
-            <p>The dedicated conversion page keeps the same lighter signup flow and the separate stronger-interest path.</p>
+            <p>Dedicated signup flow.</p>
             <a href="apply.html" data-cta="apply-home">Go to Apply</a>
           </div>
           <div class="link-rail-item">
             <h3>Trust</h3>
-            <p>What Miro is, what it is not, and what users can expect from the current early-access preview.</p>
+            <p>Expectations and limits.</p>
             <a href="trust.html" data-cta="trust-home">Read the trust notes</a>
           </div>
           <div class="link-rail-item">
             <h3>Reports</h3>
-            <p>Transparent templates for future original data reports. Draft reports stay noindex until real sources exist.</p>
+            <p>Future data templates.</p>
             <a href="reports/" data-cta="reports-home">View reports</a>
           </div>
           <div class="link-rail-item">
             <h3>Compare</h3>
-            <p>Fair comparisons with booking marketplaces, review platforms, maps, Reddit, and AI travel planners.</p>
+            <p>Where Miro fits.</p>
             <a href="compare/" data-cta="compare-home">Compare Miro</a>
           </div>
         </div>
@@ -387,7 +699,7 @@
         <div class="closing-panel">
           <span class="section-label">Early access</span>
           <h2>Help shape the first version.</h2>
-          <p>Miro is opening with small early-access cohorts so the product can learn which Seoul moments need the clearest, most useful next move first.</p>
+          <p>Small Seoul cohorts. Faster decisions. Clearer routes.</p>
           <div class="cta-row">
             <a class="button button-primary" href="#home-signup" data-cta="home-closing-signup">Get early access</a>
             <a class="button button-secondary" href="faq.html" data-cta="home-closing-faq">Read the FAQ</a>
@@ -412,7 +724,6 @@
           <a href="apply.html">Apply</a>
         </div>
         <p class="footer-meta">Map it right out. Seoul may feel like a maze, but deciding where to go next should not.</p>
-        <p class="footer-meta">Early access for a more context-aware Seoul recommendation experience, with sample previews, signups, and stronger-interest signals tracked through Vercel-friendly API routes.</p>
       </div>
     </div>
   </footer>

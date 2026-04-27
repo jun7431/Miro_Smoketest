@@ -1,6 +1,7 @@
 (() => {
   const TRACK_ENDPOINT = "/api/track";
   const SIGNUP_ENDPOINT = "/api/signup";
+  const DEMO_FIELDS = ["area", "time", "vibe"];
   const currentPage = document.body.dataset.page || "";
   const trackingState = createTrackingState();
 
@@ -102,14 +103,26 @@
       const context = form.parentElement.querySelector("[data-demo-context]");
       const title = form.parentElement.querySelector("[data-demo-title]");
       const summary = form.parentElement.querySelector("[data-demo-summary]");
+      const estimatedTime = form.parentElement.querySelector("[data-demo-estimated-time]");
+      const routeSummary = form.parentElement.querySelector("[data-demo-route-summary]");
       const stops = form.parentElement.querySelector("[data-demo-stops]");
+      const valueChips = form.parentElement.querySelector("[data-demo-value-chips]");
       const tip = form.parentElement.querySelector("[data-demo-tip]");
       let hasStarted = false;
       const trackedSelections = new Set();
 
-      form.querySelectorAll("select").forEach((field) => {
+      form.querySelectorAll("select, input[type='radio']").forEach((field) => {
         field.addEventListener("change", () => {
+          if (field.type === "radio" && !field.checked) {
+            return;
+          }
+
+          if (result && !result.hidden) {
+            result.classList.add("is-needs-refresh");
+          }
+
           updateDemoSelectionPreview(form, selection);
+          updateDemoInteractionState(form, placeholder, result);
 
           if (!hasStarted && hasAnyDemoValue(form)) {
             hasStarted = true;
@@ -122,6 +135,8 @@
           trackDemoSelection(field, form, trackedSelections);
         });
       });
+
+      updateDemoInteractionState(form, placeholder, result);
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -159,6 +174,17 @@
           summary.textContent = recommendation.summary;
         }
 
+        if (estimatedTime) {
+          estimatedTime.textContent = recommendation.estimatedTime;
+        }
+
+        if (routeSummary) {
+          routeSummary.replaceChildren(
+            createTextElement("span", "Route"),
+            createTextElement("strong", recommendation.routeLine)
+          );
+        }
+
         if (stops) {
           stops.replaceChildren(
             ...recommendation.stops.map((stop, index) => {
@@ -178,13 +204,25 @@
           );
         }
 
+        if (valueChips) {
+          valueChips.replaceChildren(
+            ...recommendation.valueChips.map((chip) => createTextElement("span", chip))
+          );
+        }
+
         if (tip) {
           tip.textContent = recommendation.tip;
         }
 
         if (result) {
           result.hidden = false;
+          result.classList.remove("is-needs-refresh", "is-revealed");
+          window.requestAnimationFrame(() => {
+            result.classList.add("is-revealed");
+          });
         }
+
+        updateDemoInteractionState(form, placeholder, result);
 
         void trackInteraction("demo_result_viewed", "Demo result viewed", {
           module: form.dataset.demoForm || "demo",
@@ -610,6 +648,107 @@
     });
   }
 
+  function updateDemoInteractionState(form, placeholder, result) {
+    const values = getDemoValues(form);
+    const selectedFields = DEMO_FIELDS.filter((fieldName) => Boolean(values[fieldName]));
+    const selectedCount = selectedFields.length;
+    const activeField = DEMO_FIELDS.find((fieldName) => !values[fieldName]) || "vibe";
+    const card = form.closest(".demo-card");
+    const current = form.querySelector("[data-demo-progress-current]");
+    const fill = form.querySelector("[data-demo-progress-fill]");
+    const submitButton = form.querySelector("[type='submit']");
+
+    if (card) {
+      card.classList.toggle("is-demo-started", selectedCount > 0);
+      card.classList.toggle("is-demo-ready", selectedCount === DEMO_FIELDS.length);
+    }
+
+    if (current) {
+      current.textContent = String(selectedCount);
+    }
+
+    if (fill) {
+      fill.style.width = `${(selectedCount / DEMO_FIELDS.length) * 100}%`;
+    }
+
+    form.querySelectorAll("[data-demo-group]").forEach((group) => {
+      const fieldName = group.dataset.demoGroup || "";
+      group.classList.toggle("is-complete", Boolean(values[fieldName]));
+      group.classList.toggle("is-active", fieldName === activeField);
+    });
+
+    form.querySelectorAll("[data-demo-flow-step]").forEach((step) => {
+      const stepName = step.dataset.demoFlowStep || "";
+      const isAnswer = stepName === "answer";
+      step.classList.toggle(
+        "is-complete",
+        isAnswer ? selectedCount === DEMO_FIELDS.length : Boolean(values[stepName])
+      );
+      step.classList.toggle("is-active", isAnswer && selectedCount === DEMO_FIELDS.length);
+    });
+
+    if (placeholder && (!result || result.hidden)) {
+      updateDemoLivePreview(placeholder, values, selectedCount);
+    }
+
+    if (submitButton) {
+      submitButton.textContent =
+        result && !result.hidden ? "Update sample Miro answer" : "See my sample Miro answer";
+    }
+  }
+
+  function getDemoValues(form) {
+    const formData = new FormData(form);
+
+    return {
+      area: normalizeFormValue(formData.get("area")),
+      time: normalizeFormValue(formData.get("time")),
+      vibe: normalizeFormValue(formData.get("vibe")),
+    };
+  }
+
+  function updateDemoLivePreview(placeholder, values, selectedCount) {
+    const title = placeholder.querySelector("[data-demo-preview-title]");
+    const area = placeholder.querySelector("[data-demo-preview-area]");
+    const time = placeholder.querySelector("[data-demo-preview-time]");
+    const vibe = placeholder.querySelector("[data-demo-preview-vibe]");
+    const action = placeholder.querySelector("[data-demo-preview-action]");
+
+    if (!title || !area || !time || !vibe || !action) {
+      placeholder.textContent = getDemoPreviewTitle(selectedCount);
+      return;
+    }
+
+    title.textContent = getDemoPreviewTitle(selectedCount);
+    area.textContent = values.area
+      ? `${DEMO_LABELS.area[values.area]} anchor`
+      : "Waiting for area";
+    time.textContent = values.time
+      ? `${TIME_ESTIMATES[values.time] || DEMO_LABELS.time[values.time]} window`
+      : "Waiting for time";
+    vibe.textContent = values.vibe
+      ? `${DEMO_LABELS.vibe[values.vibe]} mood`
+      : "Waiting for vibe";
+    action.textContent =
+      selectedCount === DEMO_FIELDS.length ? "Ready to generate" : "One next move";
+  }
+
+  function getDemoPreviewTitle(selectedCount) {
+    if (selectedCount === 0) {
+      return "Pick three inputs";
+    }
+
+    if (selectedCount === 1) {
+      return "Miro is reading context";
+    }
+
+    if (selectedCount === 2) {
+      return "Almost ready";
+    }
+
+    return "Ready for one clear route";
+  }
+
   function getDemoSelectionSummary(area, time, vibe) {
     const values = [
       DEMO_LABELS.area[area] || "Area not set",
@@ -626,15 +765,54 @@
       areaConfig.routes[vibe] ||
       areaConfig.routes[VIBE_FALLBACKS[vibe]] ||
       areaConfig.routes.default;
-    const timeLabel = TIME_LABELS[time] || "A quick";
+    const timeCopy = TIME_ROUTE_COPY[time] || "short";
+    const vibeCopy = (DEMO_LABELS.vibe[vibe] || routeConfig.summaryTone).toLowerCase();
 
     return {
       id: `${area}_${time}_${vibe}`,
       title: `${areaConfig.label} - ${routeConfig.routeName}`,
-      summary: `${timeLabel} route for a ${routeConfig.summaryTone} moment in ${areaConfig.label}. ${routeConfig.summary}`,
+      summary: `Built for a ${timeCopy} ${vibeCopy} plan in ${areaConfig.label}: close stops, local feel, and no overpacked itinerary.`,
+      estimatedTime: TIME_ESTIMATES[time] || DEMO_LABELS.time[time] || "Flexible timing",
+      routeLine: buildDemoRouteLine(routeConfig.stops),
       stops: routeConfig.stops,
+      valueChips: getDemoValueChips(vibe),
       tip: routeConfig.tip,
     };
+  }
+
+  function buildDemoRouteLine(stops) {
+    return stops.map((stop) => formatRouteStopName(stop.name)).join(" -> ");
+  }
+
+  function formatRouteStopName(name) {
+    const cleaned = name
+      .replace(/^(A|An|One|The)\s+/i, "")
+      .replace(/\s+nearby$/i, "")
+      .trim();
+
+    return cleaned ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1) : name;
+  }
+
+  function getDemoValueChips(vibe) {
+    if (vibe === "local") {
+      return ["Local-first", "No generic lists", "Easy to act on"];
+    }
+
+    if (vibe === "food") {
+      return ["Context-aware", "Food-first", "Low friction"];
+    }
+
+    if (vibe === "night" || vibe === "date") {
+      return ["Context-aware", "Taste-led", "Clear next move"];
+    }
+
+    return ["Context-aware", "Local-feeling", "Easy to act on"];
+  }
+
+  function createTextElement(tagName, text) {
+    const element = document.createElement(tagName);
+    element.textContent = text;
+    return element;
   }
 
   const DEMO_LABELS = {
@@ -662,11 +840,18 @@
     },
   };
 
-  const TIME_LABELS = {
-    "45_min": "A 45-minute",
-    "2_hours": "A 2-hour",
-    half_day: "A half-day",
-    evening: "An evening",
+  const TIME_ROUTE_COPY = {
+    "45_min": "45-minute",
+    "2_hours": "2-hour",
+    half_day: "half-day",
+    evening: "evening",
+  };
+
+  const TIME_ESTIMATES = {
+    "45_min": "About 45 min",
+    "2_hours": "About 2 hours",
+    half_day: "About half a day",
+    evening: "One evening",
   };
 
   const VIBE_FALLBACKS = {
@@ -1090,4 +1275,430 @@
       },
     },
   };
+})();
+
+// ----- visual enhancements (no tracking impact) -----
+(() => {
+  const reduced =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const supportsHover =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(hover: hover)").matches;
+
+  // MIRROR of DEMO_LABELS in the closed first IIFE — keep in sync.
+  const LABELS = {
+    area: {
+      hongdae: "Hongdae",
+      seongsu: "Seongsu",
+      itaewon: "Itaewon",
+      myeongdong: "Myeongdong",
+      jamsil: "Jamsil",
+    },
+    time: {
+      "45_min": "45 min",
+      "2_hours": "2 hours",
+      half_day: "Half day",
+      evening: "Evening",
+    },
+    vibe: {
+      calm: "Calm",
+      local: "Local",
+      date: "Date",
+      food: "Food",
+      design: "Design",
+      night: "Night",
+      reset: "Reset",
+    },
+  };
+
+  const HOVER_PREVIEWS = {
+    area: {
+      hongdae: "Indie venues, late-night street food, youthful side streets.",
+      seongsu: "Studio lanes, design-led cafés, slower industrial-chic blocks.",
+      itaewon: "Cross-cultural dining, bars, and global pockets near Namsan.",
+      myeongdong: "Dense central streets, snack stalls, easy transit access.",
+      jamsil: "Seokchon Lake walks, big landmarks, calmer pacing.",
+    },
+    time: {
+      "45_min": "One coffee + a short walk — the in-between break.",
+      "2_hours": "A small loop with one anchor and one easy close.",
+      half_day: "A real route — a few stops with breathing room.",
+      evening: "After-dark sequence, dinner-led, gentler pace.",
+    },
+    vibe: {
+      calm: "Quieter cafés, less foot traffic, easy pacing.",
+      local: "Off the obvious strip, smaller shops, side streets.",
+      date: "Set the tone — atmosphere, not just venues.",
+      food: "Lead with the meal, build the route around it.",
+      design: "Studios, galleries, tactile retail. Visual stops.",
+      night: "After dark — bars, listening rooms, late dinners.",
+      reset: "Breathing room over maximizing the neighborhood.",
+    },
+  };
+
+  const FIELDS = ["area", "time", "vibe"];
+
+  initVibeAndAreaTint();
+  initPreviewLine();
+  initChipSparkleAndBurst();
+  initHoverTooltip();
+  initCursorGlow();
+  initHeroParallaxAndScrollProgress();
+  initFloatingReturn();
+  initFocusAdvance();
+  initSkeletonOnSubmit();
+
+  // 1. Vibe/area tint on the demo card
+  function initVibeAndAreaTint() {
+    document.querySelectorAll("[data-demo-form]").forEach((form) => {
+      const card = form.closest(".demo-card");
+      if (!card) return;
+
+      const apply = () => {
+        const fd = new FormData(form);
+        const vibe = (fd.get("vibe") || "").toString();
+        const area = (fd.get("area") || "").toString();
+        if (vibe) card.setAttribute("data-active-vibe", vibe);
+        else card.removeAttribute("data-active-vibe");
+        if (area) card.setAttribute("data-active-area", area);
+        else card.removeAttribute("data-active-area");
+      };
+
+      form.querySelectorAll("input[type='radio']").forEach((radio) => {
+        radio.addEventListener("change", apply);
+      });
+      form.addEventListener("reset", () => setTimeout(apply, 0));
+      apply();
+    });
+  }
+
+  // 2. Live preview line that fills in mad-libs style
+  function initPreviewLine() {
+    document.querySelectorAll("[data-demo-form]").forEach((form) => {
+      const submitBtn = form.querySelector("[type='submit']");
+      if (!submitBtn) return;
+
+      const line = document.createElement("p");
+      line.className = "demo-preview-line";
+      line.setAttribute("aria-live", "polite");
+      submitBtn.parentNode.insertBefore(line, submitBtn);
+
+      const update = () => {
+        const fd = new FormData(form);
+        const a = (fd.get("area") || "").toString();
+        const t = (fd.get("time") || "").toString();
+        const v = (fd.get("vibe") || "").toString();
+
+        const aL = LABELS.area[a];
+        const tL = LABELS.time[t];
+        const vL = LABELS.vibe[v];
+
+        const filled = [a, t, v].filter(Boolean).length;
+
+        let html = "";
+        if (filled === 0) {
+          html =
+            'Pick three things and Miro will draft a sample route<span class="demo-preview-cursor" aria-hidden="true"></span>';
+        } else if (filled === 3) {
+          html = `Tap below for your <strong>${escapeHtml(tL)} ${escapeHtml(vL)} ${escapeHtml(aL)}</strong> sample.`;
+        } else {
+          const parts = [];
+          if (aL) parts.push(`in <strong>${escapeHtml(aL)}</strong>`);
+          if (tL) parts.push(`for <strong>${escapeHtml(tL)}</strong>`);
+          if (vL) parts.push(`with a <strong>${escapeHtml(vL)}</strong> mood`);
+          const missing = 3 - filled;
+          html = `A route ${parts.join(" ")} — <em>${missing} more pick${missing === 1 ? "" : "s"} to go</em>.`;
+        }
+
+        line.innerHTML = html;
+      };
+
+      form.querySelectorAll("input[type='radio']").forEach((radio) => {
+        radio.addEventListener("change", update);
+      });
+      form.addEventListener("reset", () => setTimeout(update, 0));
+      update();
+    });
+  }
+
+  // 3. Sparkle + burst on chip click
+  function initChipSparkleAndBurst() {
+    document.querySelectorAll("label.demo-choice").forEach((label) => {
+      label.addEventListener("click", (event) => {
+        if (reduced) return;
+
+        // Burst at click point
+        const rect = label.getBoundingClientRect();
+        const x = ("clientX" in event ? event.clientX : rect.left + rect.width / 2) - rect.left;
+        const y = ("clientY" in event ? event.clientY : rect.top + rect.height / 2) - rect.top;
+
+        const burst = document.createElement("span");
+        burst.className = "choice-burst";
+        burst.style.left = x + "px";
+        burst.style.top = y + "px";
+        burst.style.width = "20px";
+        burst.style.height = "20px";
+        label.appendChild(burst);
+        burst.addEventListener("animationend", () => burst.remove(), { once: true });
+
+        // Sparkle popper
+        const sparkle = document.createElement("span");
+        sparkle.className = "chip-sparkle";
+        const inner = document.createElement("span");
+        sparkle.appendChild(inner);
+        label.appendChild(sparkle);
+        sparkle.addEventListener("animationend", () => sparkle.remove(), { once: true });
+      });
+    });
+  }
+
+  // 4. Hover/focus tooltip with concrete preview text
+  function initHoverTooltip() {
+    if (!supportsHover) return;
+
+    const tip = document.createElement("div");
+    tip.className = "miro-tooltip";
+    tip.setAttribute("role", "tooltip");
+    document.body.appendChild(tip);
+
+    let activeLabel = null;
+    let hideTimer = null;
+
+    const show = (label) => {
+      const radio = label.querySelector("input[type='radio']");
+      if (!radio) return;
+      const name = radio.name;
+      const value = radio.value;
+      const text = HOVER_PREVIEWS[name] && HOVER_PREVIEWS[name][value];
+      if (!text) return;
+
+      tip.textContent = text;
+      const lr = label.getBoundingClientRect();
+      const tipW = Math.min(256, window.innerWidth - 24);
+      tip.style.maxWidth = tipW + "px";
+
+      let left = lr.left + lr.width / 2 - tipW / 2 + window.scrollX;
+      const minLeft = 12 + window.scrollX;
+      const maxLeft = window.scrollX + window.innerWidth - tipW - 12;
+      left = Math.max(minLeft, Math.min(maxLeft, left));
+
+      const top = lr.bottom + 10 + window.scrollY;
+
+      tip.style.left = left + "px";
+      tip.style.top = top + "px";
+
+      const arrowX = lr.left + lr.width / 2 - left + window.scrollX;
+      tip.style.setProperty("--arrow-x", arrowX + "px");
+
+      tip.classList.add("is-visible");
+      activeLabel = label;
+    };
+
+    const hide = (immediate = false) => {
+      if (hideTimer) clearTimeout(hideTimer);
+      const run = () => {
+        tip.classList.remove("is-visible");
+        activeLabel = null;
+      };
+      if (immediate) run();
+      else hideTimer = setTimeout(run, 80);
+    };
+
+    document.querySelectorAll("label.demo-choice").forEach((label) => {
+      label.addEventListener("mouseenter", () => {
+        if (hideTimer) clearTimeout(hideTimer);
+        show(label);
+      });
+      label.addEventListener("mouseleave", () => hide());
+      label.addEventListener("focusin", () => show(label));
+      label.addEventListener("focusout", () => hide());
+      label.addEventListener("click", () => hide(true));
+    });
+
+    window.addEventListener("scroll", () => hide(true), { passive: true });
+  }
+
+  // 5. Cursor-aware glow on demo card (CSS uses --mx/--my)
+  function initCursorGlow() {
+    if (!supportsHover || reduced) return;
+
+    document.querySelectorAll(".demo-card").forEach((card) => {
+      let pending = false;
+      let nextX = 50;
+      let nextY = 0;
+
+      card.addEventListener("mousemove", (event) => {
+        const rect = card.getBoundingClientRect();
+        nextX = ((event.clientX - rect.left) / rect.width) * 100;
+        nextY = ((event.clientY - rect.top) / rect.height) * 100;
+        if (!pending) {
+          pending = true;
+          window.requestAnimationFrame(() => {
+            card.style.setProperty("--mx", nextX + "%");
+            card.style.setProperty("--my", nextY + "%");
+            pending = false;
+          });
+        }
+      });
+
+      card.addEventListener("mouseleave", () => {
+        card.style.setProperty("--mx", "50%");
+        card.style.setProperty("--my", "0%");
+      });
+    });
+  }
+
+  // 6. Hero parallax + scroll progress (single scroll handler)
+  function initHeroParallaxAndScrollProgress() {
+    const heroPattern = document.querySelector(".hero-pattern");
+    const progress = document.querySelector("[data-scroll-progress]");
+    if (!heroPattern && !progress) return;
+
+    let ticking = false;
+    const update = () => {
+      const y = window.scrollY || 0;
+      const doc = document.documentElement;
+      const scrollable = (doc.scrollHeight || 0) - (window.innerHeight || 0);
+      const ratio = scrollable > 0 ? Math.min(1, Math.max(0, y / scrollable)) : 0;
+
+      if (progress) progress.style.width = ratio * 100 + "%";
+
+      if (heroPattern && !reduced) {
+        const shift = Math.max(-12, Math.min(12, y * 0.08));
+        heroPattern.style.setProperty("--hero-shift", shift + "px");
+      }
+
+      ticking = false;
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+    window.addEventListener("resize", update);
+    update();
+  }
+
+  // 7. Floating "back to demo" CTA when scrolled past with all 3 picked
+  function initFloatingReturn() {
+    const form = document.querySelector("[data-demo-form='home']");
+    if (!form) return;
+    const card = form.closest(".demo-card");
+    const result = form.parentElement && form.parentElement.querySelector("[data-demo-result]");
+    if (!card) return;
+
+    const fab = document.createElement("button");
+    fab.type = "button";
+    fab.className = "miro-fab";
+    fab.setAttribute("aria-label", "Scroll back to your sample setup");
+    fab.textContent = "Try your sample";
+    document.body.appendChild(fab);
+
+    let cardOnScreen = true;
+    if (typeof IntersectionObserver === "function") {
+      new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            cardOnScreen = entry.isIntersecting;
+            evaluate();
+          });
+        },
+        { rootMargin: "-40% 0px 0px 0px" }
+      ).observe(card);
+    }
+
+    const allPicked = () => {
+      const fd = new FormData(form);
+      return FIELDS.every((f) => fd.get(f));
+    };
+
+    const evaluate = () => {
+      const ready = !cardOnScreen && allPicked() && (!result || result.hidden);
+      fab.classList.toggle("is-visible", ready);
+    };
+
+    form.querySelectorAll("input[type='radio']").forEach((radio) => {
+      radio.addEventListener("change", evaluate);
+    });
+    if (result) {
+      const mo = new MutationObserver(evaluate);
+      mo.observe(result, { attributes: true, attributeFilter: ["hidden"] });
+    }
+
+    fab.addEventListener("click", () => {
+      card.scrollIntoView({
+        behavior: reduced ? "auto" : "smooth",
+        block: "center",
+      });
+      const submitBtn = form.querySelector("[type='submit']");
+      if (submitBtn && !reduced) {
+        submitBtn.classList.add("is-attn");
+        setTimeout(() => submitBtn.classList.remove("is-attn"), 1200);
+      }
+      fab.classList.remove("is-visible");
+    });
+  }
+
+  // 8. Auto-focus submit button the first time all 3 picks land
+  function initFocusAdvance() {
+    document.querySelectorAll("[data-demo-form]").forEach((form) => {
+      const submitBtn = form.querySelector("[type='submit']");
+      if (!submitBtn) return;
+      let advanced = false;
+
+      const check = () => {
+        const fd = new FormData(form);
+        const filled = FIELDS.every((f) => fd.get(f));
+        if (filled && !advanced) {
+          advanced = true;
+          // Defer so the radio's own focus completes first.
+          setTimeout(() => submitBtn.focus({ preventScroll: true }), 120);
+        }
+        if (!filled) advanced = false;
+      };
+
+      form.querySelectorAll("input[type='radio']").forEach((radio) => {
+        radio.addEventListener("change", check);
+      });
+    });
+  }
+
+  // 9. Capture-phase submit listener: add skeleton overlay + button "Building..." for ~480ms
+  function initSkeletonOnSubmit() {
+    document.querySelectorAll("[data-demo-form]").forEach((form) => {
+      const result = form.parentElement && form.parentElement.querySelector("[data-demo-result]");
+      const submitBtn = form.querySelector("[type='submit']");
+
+      form.addEventListener(
+        "submit",
+        () => {
+          if (reduced) return;
+          if (result) result.classList.add("is-building");
+          if (submitBtn) submitBtn.classList.add("is-building");
+          setTimeout(() => {
+            if (result) result.classList.remove("is-building");
+            if (submitBtn) submitBtn.classList.remove("is-building");
+          }, 480);
+        },
+        true
+      );
+    });
+  }
+
+  function escapeHtml(str) {
+    if (typeof str !== "string") return "";
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
 })();

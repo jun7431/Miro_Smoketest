@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
+  <defs>
+    <pattern id="miro-dot-grid" x="0" y="0" width="44" height="44" patternUnits="userSpaceOnUse">
+      <circle cx="22" cy="22" r="1.1" fill="#2563eb" opacity="0.32"/>
+    </pattern>
+    <linearGradient id="miro-line-blue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0"/>
+      <stop offset="40%" stop-color="#2563eb" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#2563eb" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="miro-line-green" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#10b981" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="miro-line-amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#miro-dot-grid)"/>
+  <path d="M-60,160 C220,120 340,280 560,280 C780,280 900,120 1260,160" stroke="url(#miro-line-blue)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M140,-40 C220,180 360,260 460,440 C560,620 720,660 840,860" stroke="url(#miro-line-green)" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M880,-40 C920,180 1060,300 1140,560" stroke="url(#miro-line-amber)" stroke-width="2" stroke-linecap="round"/>
+  <g opacity="0.55">
+    <circle cx="200" cy="148" r="5.6" fill="#ffffff" stroke="#2563eb" stroke-width="1.6"/>
+    <circle cx="560" cy="280" r="6.4" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+    <circle cx="900" cy="156" r="5.6" fill="#ffffff" stroke="#2563eb" stroke-width="1.6"/>
+    <circle cx="460" cy="440" r="6.4" fill="#ffffff" stroke="#10b981" stroke-width="1.8"/>
+    <circle cx="1140" cy="560" r="5.2" fill="#ffffff" stroke="#f59e0b" stroke-width="1.6"/>
+  </g>
+</svg>
