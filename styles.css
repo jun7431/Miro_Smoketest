@@ -2654,29 +2654,55 @@ li strong {
 
 /* ---------- Round 2: chip click polish (visual artifact fix) ---------- */
 
-/* Issue 1: Browser default :focus-visible outline on the hidden radio input
-   draws a sharp rectangle around the chip and gets clipped at the top by
-   .demo-choice's overflow:hidden. The existing rule
-   ".demo-choice input:focus-visible + span" already provides a visible
-   keyboard-focus indicator (border-color + box-shadow on the chip span),
-   so the browser's default outline is redundant and visually broken here. */
+.demo-choice {
+  overflow: visible;
+  outline: none;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.demo-choice:focus,
+.demo-choice:focus-visible,
+.demo-choice:focus-within {
+  outline: none;
+}
+
+.demo-choice input {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
 .demo-choice input:focus,
 .demo-choice input:focus-visible {
-  outline: none;
-  box-shadow: none;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-/* Issue 2: Some engines apply text-decoration: underline on focused
-   form-associated text inside <label>. Reset explicitly. */
+.demo-choice input:focus-visible + span {
+  border-color: rgba(37, 99, 235, 0.48);
+  box-shadow:
+    0 14px 26px rgba(15, 23, 42, 0.08),
+    0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.demo-choice input:checked:focus-visible + span {
+  box-shadow:
+    0 16px 28px rgba(37, 99, 235, 0.14),
+    0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
 .demo-choice,
-.demo-choice span,
-.demo-choice strong,
-.demo-choice small {
-  text-decoration: none;
-}
-
-/* Bonus: suppress mobile/touch tap highlight which can flash as a colored
-   rectangle on touch devices. */
-.demo-choice {
-  -webkit-tap-highlight-color: transparent;
+.demo-choice > span,
+.demo-choice > span *,
+.demo-choice:hover > span,
+.demo-choice:hover > span *,
+.demo-choice:focus-within > span,
+.demo-choice:focus-within > span *,
+.demo-choice:active > span,
+.demo-choice:active > span *,
+.demo-choice input:checked + span,
+.demo-choice input:checked + span * {
+  text-decoration: none !important;
 }
