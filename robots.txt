@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /supabase/
+
+# Optional LLM summary: https://miro-smoketest.vercel.app/llms.txt
+Sitemap: https://miro-smoketest.vercel.app/sitemap.xml

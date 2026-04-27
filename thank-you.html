@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thank You | Miro</title>
+  <meta name="description" content="Thank you for joining Miro's early access list.">
+  <!-- SEO: Phase 1 foundation -->
+  <link rel="canonical" href="https://miro-smoketest.vercel.app/thank-you.html">
+  <meta name="robots" content="noindex,follow">
+  <meta property="og:site_name" content="Miro">
+  <meta property="og:title" content="Thank You | Miro">
+  <meta property="og:description" content="Thank you for joining Miro's early access list.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://miro-smoketest.vercel.app/thank-you.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Thank You | Miro">
+  <meta name="twitter:description" content="Thank you for joining Miro's early access list.">
+  <!-- /SEO: Phase 1 foundation -->
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body data-page="apply">
+  <header class="site-header">
+    <div class="container">
+      <div class="site-bar">
+        <a class="brand-mark" href="index.html">Miro</a>
+
+        <nav class="site-nav site-nav-desktop" aria-label="Primary">
+          <a class="nav-link" data-nav="home" href="index.html">Home</a>
+          <a class="nav-link" data-nav="about" href="about.html">About Miro</a>
+          <a class="nav-link" data-nav="how" href="how-it-works.html">How It Works</a>
+          <a class="nav-link" data-nav="reports" href="reports/">Reports</a>
+          <a class="nav-link" data-nav="compare" href="compare/">Compare</a>
+          <a class="nav-link" data-nav="faq" href="faq.html">FAQ</a>
+          <a class="nav-cta" data-nav="apply" data-cta="nav-apply" href="apply.html">Apply</a>
+        </nav>
+
+        <details class="mobile-menu">
+          <summary>Menu</summary>
+          <div class="mobile-menu-panel">
+            <nav class="site-nav" aria-label="Mobile">
+              <a class="nav-link" data-nav="home" href="index.html">Home</a>
+              <a class="nav-link" data-nav="about" href="about.html">About Miro</a>
+              <a class="nav-link" data-nav="how" href="how-it-works.html">How It Works</a>
+              <a class="nav-link" data-nav="reports" href="reports/">Reports</a>
+              <a class="nav-link" data-nav="compare" href="compare/">Compare</a>
+              <a class="nav-link" data-nav="faq" href="faq.html">FAQ</a>
+              <a class="nav-cta" data-nav="apply" data-cta="nav-apply-mobile" href="apply.html">Apply</a>
+            </nav>
+          </div>
+        </details>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="page-intro" data-section="thank-you">
+      <div class="container">
+        <div class="page-intro-grid">
+          <div class="page-copy">
+            <span class="eyebrow">Thank you</span>
+            <h1 class="page-title">You&rsquo;re on Miro&rsquo;s list.</h1>
+            <p class="page-lead">Your early-access interest has been recorded. That helps Miro see which Seoul moments people want solved first before opening wider.</p>
+            <p>We&rsquo;ll use submissions like yours to understand who wants Miro, how they would use it, and how strong the demand signal really is.</p>
+
+            <div class="cta-row">
+              <a class="button button-secondary" href="index.html" data-cta="thank-you-home">Back to Home</a>
+              <a class="button button-primary" href="how-it-works.html" data-cta="thank-you-how">See how Miro works</a>
+            </div>
+          </div>
+
+          <div class="intent-card is-priority" data-intent="priority">
+            <span class="intent-meta">Optional stronger signal</span>
+            <h3>If you want to go a step further, signal stronger interest.</h3>
+            <p>The free signup captures early-access demand. This secondary path is for people who already know they would pay attention to a product like this.</p>
+            <a
+              class="button button-accent"
+              href="https://buy.stripe.com/YOUR_PAYMENT_LINK"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cta="stronger_intent_cta_clicked"
+              data-payment-cta="payment_cta_clicked"
+              data-placeholder-label="I&rsquo;d pay for priority access"
+              data-placeholder-cta="stronger_intent_cta_clicked"
+              data-placeholder-note-target="thank-you-priority-note"
+            >
+              Reserve priority access
+            </a>
+            <p class="form-note" id="thank-you-priority-note" hidden>Thanks - we noted your stronger interest and will follow up when priority access opens.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-shell">
+        <div class="footer-mark">Miro</div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="about.html">About Miro</a>
+          <a href="how-it-works.html">How It Works</a>
+          <a href="reports/">Reports</a>
+          <a href="trust.html">Trust</a>
+          <a href="compare/">Compare</a>
+          <a href="faq.html">FAQ</a>
+          <a href="apply.html">Apply</a>
+        </div>
+        <p class="footer-meta">Map it right out. Seoul may feel like a maze, but deciding where to go next should not.</p>
+        <p class="footer-meta">Early access for a more context-aware Seoul recommendation experience, with sample previews, signups, and stronger-interest signals tracked through Vercel-friendly API routes.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+

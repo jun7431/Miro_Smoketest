@@ -1,0 +1,83 @@
+{
+  "site_url": "https://miro-smoketest.vercel.app",
+  "reports": [
+    {
+      "slug": "neighborhood-local-signal-patterns-template",
+      "status": "draft_template",
+      "indexable": false,
+      "title": "Neighborhood local-signal patterns report template",
+      "meta_title": "Draft Template | Neighborhood Local-Signal Patterns",
+      "description": "A non-indexed draft template for a future Miro report on neighborhood-level local-signal patterns in Korea travel recommendations.",
+      "intro": "This is a report template, not a published insight report. It is included so the Miro team can publish future original data assets only after a real source dataset is available and documented.",
+      "why_it_matters": "Neighborhood-level signals could help Miro explain how local context changes recommendations for international travelers. No findings are published here because no source dataset is currently available in this repository.",
+      "key_findings": [
+        "No findings are published in this draft.",
+        "The repository does not currently include a verified local-place, saved-list, or neighborhood signal dataset.",
+        "Replace this template only after a real source file or configured data export is available."
+      ],
+      "methodology": {
+        "source_type": "Template only; no source dataset is attached.",
+        "scope": "Future report structure for neighborhood-level local-signal analysis.",
+        "limitations": "No conclusions, rankings, patterns, or statistics should be inferred from this draft."
+      },
+      "sections": [
+        {
+          "heading": "Intended source data",
+          "body": "A future version should identify the exact data export used, such as anonymized saved-place records, tagged recommendation logs, or a documented internal dataset. The file name, date range, and fields should be listed here before publication."
+        },
+        {
+          "heading": "Intended analysis shape",
+          "body": "This report could compare neighborhoods by the types of local signals that appear most often, but only after the team has verified that the data is real, representative enough for the claim, and safe to publish."
+        },
+        {
+          "heading": "Publication checklist",
+          "body": "Before changing this page to indexable, add the source file, describe the cleaning method, state the sample size, document limitations, and remove every template-only note."
+        }
+      ],
+      "limitations": [
+        "This page uses no production data.",
+        "It should not be cited as research.",
+        "It is marked noindex until a real methodology and source disclosure are added."
+      ]
+    },
+    {
+      "slug": "visitor-friction-themes-template",
+      "status": "draft_template",
+      "indexable": false,
+      "title": "Visitor friction themes report template",
+      "meta_title": "Draft Template | Visitor Friction Themes",
+      "description": "A non-indexed draft template for a future Miro report about travel friction themes for international visitors in Korea.",
+      "intro": "This draft defines the structure for a future insight report about visitor friction themes. It does not publish findings because no verified research notes, survey export, support log, or analytics dataset exists in the repository.",
+      "why_it_matters": "Visitor friction themes could help Miro prioritize recommendation features around menu accessibility, time pressure, local discovery, and decision fatigue. Those themes should only be reported after they are supported by a real source.",
+      "key_findings": [
+        "No findings are published in this draft.",
+        "No survey, interview, support, or analytics dataset was found in the repository.",
+        "Future claims should cite the exact source type, sample, and collection window."
+      ],
+      "methodology": {
+        "source_type": "Template only; no survey, interview, support, or analytics data is attached.",
+        "scope": "Future report structure for practical visitor-friction themes.",
+        "limitations": "This draft cannot support claims about traveler behavior or frequency."
+      },
+      "sections": [
+        {
+          "heading": "Intended source data",
+          "body": "A future version should use a clearly identified source such as anonymized signup messages, user research notes, feedback forms, or analytics events. The report should state how personal data was removed or aggregated."
+        },
+        {
+          "heading": "Intended analysis shape",
+          "body": "The report could group real feedback into themes such as language friction, time-window pressure, over-researching, or difficulty finding local-feeling places. Each theme should be traceable to actual source records."
+        },
+        {
+          "heading": "Publication checklist",
+          "body": "Before publication, add the source disclosure, sample size, date range, coding method, example categories, caveats, and a review step to remove unsupported claims."
+        }
+      ],
+      "limitations": [
+        "This page uses no user research data.",
+        "It should not be used as evidence of market trends.",
+        "It is marked noindex until a real source and methodology are supplied."
+      ]
+    }
+  ]
+}

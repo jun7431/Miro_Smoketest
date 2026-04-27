@@ -1,0 +1,30 @@
+# Miro
+
+Miro is an early-access Korea local travel recommendation product for international travelers. It is designed to help visitors decide what to do next by using context such as area, time, mood, and local signals.
+
+## Audience
+
+Miro is for international travelers visiting Korea who want practical, local-feeling recommendations without spending too much time comparing maps, review platforms, social posts, forums, and generic travel lists.
+
+## Core Pages
+
+- Home: https://miro-smoketest.vercel.app/
+- About: https://miro-smoketest.vercel.app/about
+- How It Works: https://miro-smoketest.vercel.app/how-it-works
+- FAQ: https://miro-smoketest.vercel.app/faq
+- Trust: https://miro-smoketest.vercel.app/trust
+- Compare: https://miro-smoketest.vercel.app/compare/
+- Reports: https://miro-smoketest.vercel.app/reports/
+- Apply: https://miro-smoketest.vercel.app/apply.html
+
+## Trust And Limitations
+
+- Miro is an early-access preview, not a fully launched public travel platform.
+- The site does not claim fake rankings, fake reviews, fake awards, fake partnerships, or unsupported usage numbers.
+- Comparison pages are written as fair product-positioning pages, not as claims of objective superiority.
+- Draft report detail pages are marked `noindex,follow` and should not be cited as research until real source data, methodology, sample scope, and limitations are published.
+- The reports index is public, but current draft report templates do not contain research findings.
+
+## Citation-Friendly Summary
+
+Miro is an early-access Korea travel recommendation product for international visitors, focused on context-aware local recommendations shaped by area, time, mood, and local signals.

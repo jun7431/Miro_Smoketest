@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Miro | Context-aware Korea travel recommendations</title>
+  <meta name="description" content="Miro helps international travelers in Korea preview context-aware itineraries and local recommendations shaped by area, time, vibe, and local signals.">
+  <!-- SEO: Phase 1 foundation -->
+  <link rel="canonical" href="https://miro-smoketest.vercel.app/">
+  <meta property="og:site_name" content="Miro">
+  <meta property="og:title" content="Miro | Context-aware Korea travel recommendations">
+  <meta property="og:description" content="Miro helps international travelers in Korea preview context-aware itineraries and local recommendations shaped by area, time, vibe, and local signals.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://miro-smoketest.vercel.app/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Miro | Context-aware Korea travel recommendations">
+  <meta name="twitter:description" content="Miro helps international travelers in Korea preview context-aware itineraries and local recommendations shaped by area, time, vibe, and local signals.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://miro-smoketest.vercel.app/#organization",
+        "name": "Miro",
+        "url": "https://miro-smoketest.vercel.app/",
+        "description": "Miro is an early-access Korea local travel recommendation product for international travelers."
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://miro-smoketest.vercel.app/#website",
+        "name": "Miro",
+        "url": "https://miro-smoketest.vercel.app/",
+        "publisher": {
+          "@id": "https://miro-smoketest.vercel.app/#organization"
+        },
+        "inLanguage": "en"
+      },
+      {
+        "@type": "WebApplication",
+        "@id": "https://miro-smoketest.vercel.app/#webapp",
+        "name": "Miro",
+        "url": "https://miro-smoketest.vercel.app/",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Web",
+        "description": "Miro helps international travelers in Korea preview context-aware itineraries and recommendations shaped by area, time, vibe, and local signals.",
+        "audience": {
+          "@type": "Audience",
+          "audienceType": "International travelers visiting Korea"
+        }
+      }
+    ]
+  }
+  </script>
+  <!-- /SEO: Phase 1 foundation -->
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <div class="container">
+      <div class="site-bar">
+        <a class="brand-mark" href="index.html">Miro</a>
+
+        <nav class="site-nav site-nav-desktop" aria-label="Primary">
+          <a class="nav-link" data-nav="home" href="index.html">Home</a>
+          <a class="nav-link" data-nav="about" href="about.html">About Miro</a>
+          <a class="nav-link" data-nav="how" href="how-it-works.html">How It Works</a>
+          <a class="nav-link" data-nav="reports" href="reports/">Reports</a>
+          <a class="nav-link" data-nav="compare" href="compare/">Compare</a>
+          <a class="nav-link" data-nav="faq" href="faq.html">FAQ</a>
+          <a class="nav-cta" data-nav="apply" data-cta="nav-apply" href="apply.html">Apply</a>
+        </nav>
+
+        <details class="mobile-menu">
+          <summary>Menu</summary>
+          <div class="mobile-menu-panel">
+            <nav class="site-nav" aria-label="Mobile">
+              <a class="nav-link" data-nav="home" href="index.html">Home</a>
+              <a class="nav-link" data-nav="about" href="about.html">About Miro</a>
+              <a class="nav-link" data-nav="how" href="how-it-works.html">How It Works</a>
+              <a class="nav-link" data-nav="reports" href="reports/">Reports</a>
+              <a class="nav-link" data-nav="compare" href="compare/">Compare</a>
+              <a class="nav-link" data-nav="faq" href="faq.html">FAQ</a>
+              <a class="nav-cta" data-nav="apply" data-cta="nav-apply-mobile" href="apply.html">Apply</a>
+            </nav>
+          </div>
+        </details>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero" data-section="hero">
+      <div class="container">
+        <div class="page-hero-grid">
+          <div class="page-copy">
+            <span class="eyebrow">Area + time + vibe</span>
+            <h1 class="page-title">Stop overthinking what to do in Seoul.</h1>
+            <p class="page-lead">Miro turns where you are, how much time you have, and the mood you&rsquo;re in into a tighter next move instead of another pile of tabs and generic lists.</p>
+            <p>Try a sample answer first. If it feels useful, join early access and help shape the real product.</p>
+            <p class="form-note">Miro is opening through small early-access batches for people who want faster, calmer Seoul decisions.</p>
+          </div>
+
+          <section class="demo-card" data-section="home-demo" aria-label="Sample Miro preview">
+            <div class="demo-card-shell">
+              <div class="demo-copy">
+                <span class="intent-meta">Try the concept</span>
+                <h2 class="demo-title">Build a sample Miro route.</h2>
+                <p class="form-note">Three quick inputs. One believable answer in under 10 seconds.</p>
+              </div>
+
+              <form class="demo-form" data-demo-form="home">
+                <div class="demo-grid">
+                  <div class="field">
+                    <label for="demo-area">Area</label>
+                    <select id="demo-area" name="area" required>
+                      <option value="">Choose an area</option>
+                      <option value="hongdae">Hongdae</option>
+                      <option value="seongsu">Seongsu</option>
+                      <option value="itaewon">Itaewon</option>
+                      <option value="myeongdong">Myeongdong</option>
+                      <option value="jamsil">Jamsil</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="demo-time">Time</label>
+                    <select id="demo-time" name="time" required>
+                      <option value="">Choose time</option>
+                      <option value="45_min">45 min</option>
+                      <option value="2_hours">2 hours</option>
+                      <option value="half_day">Half day</option>
+                      <option value="evening">Evening</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="demo-vibe">Vibe</label>
+                    <select id="demo-vibe" name="vibe" required>
+                      <option value="">Choose a vibe</option>
+                      <option value="calm">Calm</option>
+                      <option value="local">Local</option>
+                      <option value="date">Date</option>
+                      <option value="food">Food</option>
+                      <option value="design">Design</option>
+                      <option value="night">Night</option>
+                      <option value="reset">Reset</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="demo-selection" data-demo-selection hidden aria-live="polite">
+                  <span class="demo-chip" data-demo-chip="area">Area: not set</span>
+                  <span class="demo-chip" data-demo-chip="time">Time: not set</span>
+                  <span class="demo-chip" data-demo-chip="vibe">Vibe: not set</span>
+                </div>
+
+                <button class="button button-primary" type="submit" data-cta="home-demo-submit">See my sample Miro answer</button>
+              </form>
+
+              <div class="demo-placeholder" data-demo-placeholder>
+                Choose an area, time, and vibe to see how Miro narrows Seoul into one next move you can actually act on.
+              </div>
+
+              <div class="demo-result" data-demo-result hidden>
+                <div class="demo-result-head">
+                  <span class="intent-meta" data-demo-badge>Sample Miro answer</span>
+                  <p class="demo-context" data-demo-context></p>
+                  <h3 data-demo-title></h3>
+                  <p data-demo-summary></p>
+                </div>
+                <ol class="demo-stops" data-demo-stops></ol>
+                <p class="demo-tip" data-demo-tip></p>
+                <div class="cta-row">
+                  <a class="button button-primary" href="#home-signup" data-cta="home-primary-get-early-access">Get early access</a>
+                  <a class="button button-secondary" href="how-it-works.html" data-cta="home-demo-how">See how it works</a>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="home-signup" data-section="home-signup">
+      <div class="container">
+        <div class="apply-shell">
+          <div class="apply-copy">
+            <div class="section-heading">
+              <span class="section-label">Get early access</span>
+              <h2>Start with one simple step.</h2>
+              <p>Leave your email, add a little context if you want, and Miro will reach out when the first Seoul early-access cohort opens.</p>
+            </div>
+
+            <div class="note-list">
+              <div class="note-row">
+                <strong>Fast first step</strong>
+                <p>Email and consent are enough to get on the list.</p>
+              </div>
+              <div class="note-row">
+                <strong>Optional context</strong>
+                <p>You can add your area or use case now, and keep the rest for later if you want.</p>
+              </div>
+              <div class="note-row">
+                <strong>Useful follow-up</strong>
+                <p>Miro uses that context to learn which kinds of Seoul moments people want help with first.</p>
+              </div>
+            </div>
+          </div>
+
+          <form
+            class="signup-form form-card"
+            action="/api/signup"
+            method="POST"
+            data-signup-form="home"
+          >
+            <span class="section-label" style="margin-bottom: 0;">Free early access</span>
+            <p class="form-intro">Get notified when Miro opens and help shape a more context-aware Seoul recommendation experience.</p>
+
+            <div data-form-fields class="form-grid">
+              <div class="field">
+                <label for="home-email">Email</label>
+                <input id="home-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+              </div>
+
+              <div class="field-grid">
+                <div class="field">
+                  <label for="home-use-case">Purpose of use (optional)</label>
+                  <select id="home-use-case" name="use_case">
+                    <option value="">Select one</option>
+                    <option value="travel">Travel</option>
+                    <option value="local_exploration">Local exploration</option>
+                    <option value="date">Date</option>
+                    <option value="food">Food</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="home-area">Current area or neighborhood (optional)</label>
+                  <input id="home-area" name="area" type="text" placeholder="e.g. Hongdae, Seongsu, Itaewon">
+                </div>
+              </div>
+
+              <details class="advanced-fields" data-advanced-fields>
+                <summary>Add a little more context (optional)</summary>
+                <div class="advanced-fields-body">
+                  <div class="field-grid">
+                    <div class="field">
+                      <label for="home-name">Name (optional)</label>
+                      <input id="home-name" name="name" type="text" placeholder="Your name" autocomplete="name">
+                    </div>
+
+                    <div class="field">
+                      <label for="home-phone">Phone number (optional)</label>
+                      <input id="home-phone" name="phone" type="tel" placeholder="+82 10-0000-0000" autocomplete="tel">
+                    </div>
+
+                    <div class="field">
+                      <label for="home-language">Preferred language or nationality (optional)</label>
+                      <input
+                        id="home-language"
+                        name="language_or_nationality"
+                        type="text"
+                        placeholder="e.g. English, Korean, Japanese"
+                        autocomplete="language"
+                      >
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="home-message">What do you want help with? (optional)</label>
+                    <textarea
+                      id="home-message"
+                      name="message"
+                      placeholder="Tell Miro what you are trying to decide, plan, or discover."
+                    ></textarea>
+                  </div>
+                </div>
+              </details>
+
+              <div class="consent-field">
+                <input id="home-consent" name="consent" type="checkbox" required>
+                <div class="consent-copy">
+                  <label for="home-consent">I agree to receive Miro updates and early-access contact.</label>
+                  <p class="form-note">Required so Miro can follow up about launch timing and early testing.</p>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button class="button button-primary" type="submit" data-cta="home-signup-submit">Get early access</button>
+                <p class="form-note">If you want a little more detail before signing up, the full flow is still on the <a href="apply.html" data-cta="home-apply-link">Apply page</a>.</p>
+                <div class="form-status" data-form-status aria-live="polite"></div>
+              </div>
+            </div>
+
+            <div class="form-success" data-form-success hidden>
+              <span class="intent-meta">You&rsquo;re in</span>
+              <h3>You&rsquo;re on the Miro early-access list.</h3>
+              <p>Miro saved your request for <strong data-success-email></strong>. That tells us this kind of faster Seoul decision flow is worth building.</p>
+              <p class="form-note">If you also want to signal stronger purchase intent, that secondary path is right below.</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-section="priority">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-label">Stronger interest</span>
+          <h2>For people already sold on the idea.</h2>
+          <p>This is a separate signal from the free path. If Miro already feels like something you would pay for, tell us now and we&rsquo;ll follow up when priority access opens.</p>
+        </div>
+
+        <div class="intent-grid">
+          <article class="intent-card is-priority" id="priority-access" data-intent="priority">
+            <span class="intent-meta">Secondary signal</span>
+            <h3>I&rsquo;d pay for priority access.</h3>
+            <p>Use this if the sample already feels valuable and you want to signal stronger intent than a standard early-access signup.</p>
+            <div class="cta-row">
+              <a
+                class="button button-accent"
+                href="https://buy.stripe.com/YOUR_PAYMENT_LINK"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cta="stronger_intent_cta_clicked"
+                data-payment-cta="payment_cta_clicked"
+                data-placeholder-label="I&rsquo;d pay for priority access"
+                data-placeholder-cta="stronger_intent_cta_clicked"
+                data-placeholder-note-target="home-priority-note"
+              >
+                Reserve priority access
+              </a>
+            </div>
+            <p class="form-note" id="home-priority-note" hidden>Thanks - we noted your stronger interest. Priority access opens after the first early-access cohort.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-section="navigation">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-label">Want more detail?</span>
+          <h2>Explore the product idea at your own pace.</h2>
+        </div>
+
+        <div class="link-rail">
+          <div class="link-rail-item">
+            <h3>About Miro</h3>
+            <p>Why Seoul can feel overwhelming and why a tighter next-move experience matters.</p>
+            <a href="about.html" data-cta="about-home">Read the story</a>
+          </div>
+          <div class="link-rail-item">
+            <h3>How It Works</h3>
+            <p>The Miro logic in plain language: area, time, vibe, and a smaller set of choices you can act on.</p>
+            <a href="how-it-works.html" data-cta="how-home">See the model</a>
+          </div>
+          <div class="link-rail-item">
+            <h3>Apply</h3>
+            <p>The dedicated conversion page keeps the same lighter signup flow and the separate stronger-interest path.</p>
+            <a href="apply.html" data-cta="apply-home">Go to Apply</a>
+          </div>
+          <div class="link-rail-item">
+            <h3>Trust</h3>
+            <p>What Miro is, what it is not, and what users can expect from the current early-access preview.</p>
+            <a href="trust.html" data-cta="trust-home">Read the trust notes</a>
+          </div>
+          <div class="link-rail-item">
+            <h3>Reports</h3>
+            <p>Transparent templates for future original data reports. Draft reports stay noindex until real sources exist.</p>
+            <a href="reports/" data-cta="reports-home">View reports</a>
+          </div>
+          <div class="link-rail-item">
+            <h3>Compare</h3>
+            <p>Fair comparisons with booking marketplaces, review platforms, maps, Reddit, and AI travel planners.</p>
+            <a href="compare/" data-cta="compare-home">Compare Miro</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-section="closing">
+      <div class="container">
+        <div class="closing-panel">
+          <span class="section-label">Early access</span>
+          <h2>Help shape the first version.</h2>
+          <p>Miro is opening with small early-access cohorts so the product can learn which Seoul moments need the clearest, most useful next move first.</p>
+          <div class="cta-row">
+            <a class="button button-primary" href="#home-signup" data-cta="home-closing-signup">Get early access</a>
+            <a class="button button-secondary" href="faq.html" data-cta="home-closing-faq">Read the FAQ</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-shell">
+        <div class="footer-mark">Miro</div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="about.html">About Miro</a>
+          <a href="how-it-works.html">How It Works</a>
+          <a href="reports/">Reports</a>
+          <a href="trust.html">Trust</a>
+          <a href="compare/">Compare</a>
+          <a href="faq.html">FAQ</a>
+          <a href="apply.html">Apply</a>
+        </div>
+        <p class="footer-meta">Map it right out. Seoul may feel like a maze, but deciding where to go next should not.</p>
+        <p class="footer-meta">Early access for a more context-aware Seoul recommendation experience, with sample previews, signups, and stronger-interest signals tracked through Vercel-friendly API routes.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
