@@ -33,10 +33,11 @@ Key `normalized_name` values now include:
 
 ## Where it is stored
 
-The frontend posts into these Vercel routes:
+The browser and admin checks use these Vercel routes:
 
 - `POST /api/track`
 - `POST /api/signup`
+- `GET /api/supabase-health`
 - `GET /api/debug?token=...`
 
 The backend writes into Supabase using the server-side service role key.
@@ -98,7 +99,7 @@ Add these in Vercel Project Settings:
 
 - `MIRO_STORAGE_DRIVER=supabase`
 - `SUPABASE_URL=https://YOUR_PROJECT.supabase.co`
-- `SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY=YOUR_SECRET_OR_SERVICE_ROLE_KEY`
 - `MIRO_ADMIN_TOKEN=YOUR_SECRET_DEBUG_TOKEN`
 
 Optional overrides:
@@ -111,14 +112,32 @@ Important:
 
 - The deployed project should use `supabase` mode
 - If Supabase is not configured, the API routes now fail loudly instead of silently pretending the data was saved
+- Never expose `SUPABASE_SERVICE_ROLE_KEY` in frontend code
+- Never commit a real `.env` file
+- Use Vercel Environment Variables for production
 
 ## Supabase setup
 
-1. Create a Supabase project
-2. Open the SQL Editor
-3. Run the SQL in `supabase/schema.sql`
-4. Copy the project URL and service role key into Vercel environment variables
-5. Redeploy the Vercel project
+1. Create a Supabase project.
+2. In Supabase, copy the Project URL from Project Settings.
+3. In Supabase, copy the Secret key / service role key from Project Settings. Keep this server-side only.
+4. In Vercel Project Settings, add:
+   - `MIRO_STORAGE_DRIVER=supabase`
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `MIRO_SUPABASE_SCHEMA=public`
+   - `MIRO_SUPABASE_EVENTS_TABLE=tracking_events`
+   - `MIRO_SUPABASE_SIGNUPS_TABLE=signup_submissions`
+   - `MIRO_ADMIN_TOKEN`
+5. Open the Supabase SQL Editor.
+6. Run the SQL from `supabase/schema.sql`.
+7. Redeploy the Vercel project so the new environment variables are active.
+8. Open `/api/supabase-health` on the deployed domain. A healthy setup returns `ok: true` and both tables marked as reachable.
+9. Submit one test signup with safe test data such as `test+miro-123@example.com`, then confirm a row appears in Supabase Table Editor under `signup_submissions`.
+
+The SQL enables Row Level Security on both tables and intentionally does not create broad public `SELECT` or anon `INSERT` policies. Browser users submit through Vercel API routes, and the serverless functions write to Supabase with the server-side service role key.
+
+If `/api/supabase-health` reports `Missing table: tracking_events` or `Missing table: signup_submissions`, run `supabase/schema.sql` again in the Supabase SQL Editor and redeploy if environment variables changed.
 
 ## How to inspect data later
 
@@ -132,6 +151,8 @@ You have two simple inspection options:
    - events only: `/api/debug?token=YOUR_TOKEN&kind=events`
    - signups only: `/api/debug?token=YOUR_TOKEN&kind=signups`
    - optional limit: `&limit=50`
+
+For quick setup validation, use `/api/supabase-health`. It reports whether Supabase env vars are present and whether the configured tables are reachable, but it does not expose secrets or stored user data.
 
 ## Stripe payment link
 

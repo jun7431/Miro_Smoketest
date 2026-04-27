@@ -2651,3 +2651,32 @@ li strong {
   .demo-preview-cursor { animation: none; }
   .scroll-progress > span { transition: none; }
 }
+
+/* ---------- Round 2: chip click polish (visual artifact fix) ---------- */
+
+/* Issue 1: Browser default :focus-visible outline on the hidden radio input
+   draws a sharp rectangle around the chip and gets clipped at the top by
+   .demo-choice's overflow:hidden. The existing rule
+   ".demo-choice input:focus-visible + span" already provides a visible
+   keyboard-focus indicator (border-color + box-shadow on the chip span),
+   so the browser's default outline is redundant and visually broken here. */
+.demo-choice input:focus,
+.demo-choice input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Issue 2: Some engines apply text-decoration: underline on focused
+   form-associated text inside <label>. Reset explicitly. */
+.demo-choice,
+.demo-choice span,
+.demo-choice strong,
+.demo-choice small {
+  text-decoration: none;
+}
+
+/* Bonus: suppress mobile/touch tap highlight which can flash as a colored
+   rectangle on touch devices. */
+.demo-choice {
+  -webkit-tap-highlight-color: transparent;
+}

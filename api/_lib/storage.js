@@ -129,6 +129,7 @@ async function getDebugSnapshot(kind = "all", limit = 25) {
 
 module.exports = {
   getDebugSnapshot,
+  getStorageDriver,
   getStorageInfo,
   storeEvent,
   storeSignup,

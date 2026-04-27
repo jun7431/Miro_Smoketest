@@ -40,6 +40,50 @@ function createStorageConfigurationError(message) {
   return error;
 }
 
+const REQUIRED_EVENT_COLUMNS = [
+  "id",
+  "type",
+  "timestamp",
+  "page",
+  "label",
+  "normalized_name",
+  "referrer",
+  "user_agent",
+  "session_id",
+  "anonymous_id",
+  "metadata",
+];
+
+const REQUIRED_SIGNUP_COLUMNS = [
+  "id",
+  "timestamp",
+  "page",
+  "name",
+  "email",
+  "phone",
+  "language_or_nationality",
+  "use_case",
+  "area",
+  "message",
+  "consent",
+  "source",
+  "referrer",
+  "user_agent",
+  "session_id",
+  "anonymous_id",
+];
+
+function looksLikeMissingTableError(detail, responseStatus) {
+  const text = typeof detail === "string" ? detail.toLowerCase() : "";
+
+  return (
+    responseStatus === 404 ||
+    text.includes("could not find the table") ||
+    (text.includes("schema cache") && text.includes("table")) ||
+    (text.includes("relation") && text.includes("does not exist"))
+  );
+}
+
 function assertSupabaseConfigured() {
   if (isSupabaseConfigured()) {
     return getSupabaseConfig();
@@ -67,7 +111,7 @@ function createHeaders(config, additionalHeaders = {}) {
   return headers;
 }
 
-async function parseResponse(response, fallbackMessage) {
+async function parseResponse(response, fallbackMessage, options = {}) {
   const bodyText = await response.text();
   let parsedBody = null;
 
@@ -84,14 +128,69 @@ async function parseResponse(response, fallbackMessage) {
       parsedBody && typeof parsedBody === "object"
         ? parsedBody.message || parsedBody.error || parsedBody.details || null
         : parsedBody;
-    const error = createStorageConfigurationError(
-      detail || fallbackMessage || "Supabase request failed."
-    );
+    const tableName = options.tableName || "";
+    const errorMessage =
+      tableName && looksLikeMissingTableError(detail, response.status)
+        ? `Missing table: ${tableName}. Run supabase/schema.sql in the Supabase SQL Editor.`
+        : detail || fallbackMessage || "Supabase request failed.";
+    const error = createStorageConfigurationError(errorMessage);
+    error.isMissingTable =
+      Boolean(tableName) && looksLikeMissingTableError(detail, response.status);
     error.responseStatus = response.status;
+    error.supabaseDetail =
+      typeof detail === "string" && detail !== errorMessage ? detail : null;
     throw error;
   }
 
   return parsedBody;
+}
+
+function getSafeErrorMessage(error) {
+  return error && error.message ? error.message : "Supabase request failed.";
+}
+
+function createTableHealth(
+  tableName,
+  role,
+  { exists, readAccessible, insertAccessible, message }
+) {
+  return {
+    table: tableName,
+    role,
+    exists,
+    readAccessible,
+    insertAccessible,
+    message:
+      message ||
+      (exists && readAccessible && insertAccessible
+        ? "Table and required columns are reachable with the configured server-side key."
+        : `Missing table: ${tableName}. Run supabase/schema.sql in the Supabase SQL Editor.`),
+  };
+}
+
+async function checkTableReachable(tableName, role, requiredColumns) {
+  try {
+    await selectFromTable(tableName, {
+      select: requiredColumns.join(","),
+      limit: 1,
+      orderBy: "timestamp",
+    });
+
+    return createTableHealth(tableName, role, {
+      exists: true,
+      readAccessible: true,
+      insertAccessible: true,
+    });
+  } catch (error) {
+    const missingTable = Boolean(error && error.isMissingTable);
+
+    return createTableHealth(tableName, role, {
+      exists: !missingTable,
+      readAccessible: false,
+      insertAccessible: false,
+      message: getSafeErrorMessage(error),
+    });
+  }
 }
 
 function buildRestUrl(config, tableName, query = {}) {
@@ -116,7 +215,9 @@ async function insertIntoTable(tableName, record) {
     body: JSON.stringify(record),
   });
 
-  const rows = await parseResponse(response, `Unable to insert row into ${tableName}.`);
+  const rows = await parseResponse(response, `Unable to insert row into ${tableName}.`, {
+    tableName,
+  });
   return Array.isArray(rows) ? rows[0] || null : rows;
 }
 
@@ -137,7 +238,9 @@ async function selectFromTable(tableName, options = {}) {
     headers: createHeaders(config),
   });
 
-  const rows = await parseResponse(response, `Unable to read rows from ${tableName}.`);
+  const rows = await parseResponse(response, `Unable to read rows from ${tableName}.`, {
+    tableName,
+  });
   return Array.isArray(rows) ? rows : [];
 }
 
@@ -161,8 +264,84 @@ async function listRecentSignupRecords(limit) {
   return selectFromTable(config.signupsTable, { limit });
 }
 
+async function checkSupabaseHealth(storageDriver) {
+  const config = getSupabaseConfig();
+  const supabaseConfigured = isSupabaseConfigured();
+  const configuredStorageDriver =
+    typeof storageDriver === "string" && storageDriver ? storageDriver : "unknown";
+
+  if (!supabaseConfigured) {
+    return {
+      ok: false,
+      storageDriver: configuredStorageDriver,
+      supabaseConfigured,
+      schema: config.schema,
+      tables: {
+        [config.eventsTable]: createTableHealth(
+          config.eventsTable,
+          "events",
+          {
+            exists: false,
+            readAccessible: false,
+            insertAccessible: false,
+            message:
+              "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+          }
+        ),
+        [config.signupsTable]: createTableHealth(
+          config.signupsTable,
+          "signups",
+          {
+            exists: false,
+            readAccessible: false,
+            insertAccessible: false,
+            message:
+              "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+          }
+        ),
+      },
+      messages: [
+        "Set MIRO_STORAGE_DRIVER=supabase plus SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+      ],
+    };
+  }
+
+  const [eventsHealth, signupsHealth] = await Promise.all([
+    checkTableReachable(config.eventsTable, "events", REQUIRED_EVENT_COLUMNS),
+    checkTableReachable(config.signupsTable, "signups", REQUIRED_SIGNUP_COLUMNS),
+  ]);
+  const ok =
+    configuredStorageDriver === "supabase" &&
+    eventsHealth.insertAccessible &&
+    signupsHealth.insertAccessible;
+  const messages = [];
+
+  if (configuredStorageDriver !== "supabase") {
+    messages.push("MIRO_STORAGE_DRIVER should be set to supabase for production.");
+  }
+
+  [eventsHealth, signupsHealth].forEach((tableHealth) => {
+    if (!tableHealth.insertAccessible) {
+      messages.push(tableHealth.message);
+    }
+  });
+
+  return {
+    ok,
+    storageDriver: configuredStorageDriver,
+    supabaseConfigured,
+    schema: config.schema,
+    tables: {
+      [config.eventsTable]: eventsHealth,
+      [config.signupsTable]: signupsHealth,
+    },
+    messages,
+  };
+}
+
 module.exports = {
   assertSupabaseConfigured,
+  checkSupabaseHealth,
   createStorageConfigurationError,
   getSupabaseConfig,
   insertEventRecord,
