@@ -8,6 +8,7 @@ function getProvidedToken(req) {
     return authHeader.slice(7).trim();
   }
 
+  // Backward-compatible fallback for old manual links; prefer Authorization: Bearer.
   return getQuery(req).get("token") || "";
 }
 

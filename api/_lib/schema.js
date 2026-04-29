@@ -89,14 +89,24 @@ function sanitizeMetadata(value) {
   return cleaned;
 }
 
-function getRequestMeta(req) {
-  const forwardedFor = normalizeString(req.headers["x-forwarded-for"], 255);
+function getMinimizedIpPrefix(value) {
+  const forwardedFor = normalizeString(value, 255);
+  const firstIp = forwardedFor.split(",")[0].trim();
+  const ipv4Match = firstIp.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.\d{1,3}$/);
 
+  if (ipv4Match) {
+    return `${ipv4Match[1]}.${ipv4Match[2]}.${ipv4Match[3]}.0`;
+  }
+
+  return null;
+}
+
+function getRequestMeta(req) {
   return {
     referrer:
       normalizeNullableString(req.headers.referer || req.headers.referrer, 1000),
     user_agent: normalizeNullableString(req.headers["user-agent"], 1000),
-    request_ip: forwardedFor ? forwardedFor.split(",")[0].trim() : null,
+    request_ip_prefix: getMinimizedIpPrefix(req.headers["x-forwarded-for"]),
   };
 }
 
@@ -133,8 +143,8 @@ function normalizeEvent(payload, req) {
     normalizeNullableString(body.anonymous_id || body.anonymousId, 120) ||
     normalizeNullableString(metadata.anonymous_id, 120);
 
-  if (requestMeta.request_ip && !metadata.request_ip) {
-    metadata.request_ip = requestMeta.request_ip;
+  if (requestMeta.request_ip_prefix && !metadata.request_ip_prefix) {
+    metadata.request_ip_prefix = requestMeta.request_ip_prefix;
   }
 
   return {

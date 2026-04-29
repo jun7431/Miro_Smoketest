@@ -141,7 +141,7 @@ def nav(prefix, active):
         ("reports", "reports/", "Reports", "nav-link"),
         ("compare", "compare/", "Compare", "nav-link"),
         ("faq", "faq.html", "FAQ", "nav-link"),
-        ("apply", "apply.html", "Apply", "nav-cta"),
+        ("apply", "index.html#home-signup", "Get early access", "nav-cta"),
     ]
     desktop = "\n".join(f'          <a class="{cls}" data-nav="{key}" href="{prefix}{href}">{label}</a>' for key, href, label, cls in items)
     mobile = "\n".join(f'              <a class="{cls}" data-nav="{key}" href="{prefix}{href}">{label}</a>' for key, href, label, cls in items)
@@ -178,7 +178,7 @@ def footer(prefix):
           <a href="{prefix}reports/">Reports</a>
           <a href="{prefix}compare/">Compare</a>
           <a href="{prefix}faq.html">FAQ</a>
-          <a href="{prefix}apply.html">Apply</a>
+          <a href="{prefix}index.html#home-signup">Get early access</a>
         </div>
         <p class="footer-meta">Map it right out. Seoul may feel like a maze, but deciding where to go next should not.</p>
         <p class="footer-meta">Early access for a more context-aware Korea recommendation experience, with sample previews, trust pages, comparison pages, signups, and stronger-interest signals.</p>
@@ -240,7 +240,7 @@ def page(filename, page_key, title, desc, canonical_path, eyebrow, h1, intro, se
             <p>{e(cta[1])}</p>
             <div class="cta-row">
               <a class="button button-primary" href="index.html#home-demo" data-cta="{page_key}-demo">Try the Miro preview</a>
-              <a class="button button-secondary" href="apply.html#free-signup" data-cta="{page_key}-apply">Get early access</a>
+              <a class="button button-secondary" href="index.html#home-signup" data-cta="{page_key}-apply">Get early access</a>
             </div>
           </section>
         </article>
@@ -317,7 +317,7 @@ def compare_page(comp):
             <p>The homepage demo shows the kind of focused answer Miro is being shaped around: area, time, vibe, and fewer choices.</p>
             <div class="cta-row">
               <a class="button button-primary" href="../../index.html#home-demo" data-cta="compare-demo-{comp["slug"]}">Try the Miro preview</a>
-              <a class="button button-secondary" href="../../apply.html#free-signup" data-cta="compare-apply-{comp["slug"]}">Get early access</a>
+              <a class="button button-secondary" href="../../index.html#home-signup" data-cta="compare-apply-{comp["slug"]}">Get early access</a>
             </div>
           </section>
         </article>

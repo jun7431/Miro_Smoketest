@@ -152,18 +152,19 @@ function getSafeErrorMessage(error) {
 function createTableHealth(
   tableName,
   role,
-  { exists, readAccessible, insertAccessible, message }
+  { exists, readAccessible, writeAccessible = null, writeCheckPerformed = false, message }
 ) {
   return {
     table: tableName,
     role,
     exists,
     readAccessible,
-    insertAccessible,
+    writeAccessible,
+    writeCheckPerformed,
     message:
       message ||
-      (exists && readAccessible && insertAccessible
-        ? "Table and required columns are reachable with the configured server-side key."
+      (exists && readAccessible
+        ? "Table and required columns are readable with the configured server-side key. Write access is verified by submitting a safe test signup, not by this non-destructive health check."
         : `Missing table: ${tableName}. Run supabase/schema.sql in the Supabase SQL Editor.`),
   };
 }
@@ -179,7 +180,6 @@ async function checkTableReachable(tableName, role, requiredColumns) {
     return createTableHealth(tableName, role, {
       exists: true,
       readAccessible: true,
-      insertAccessible: true,
     });
   } catch (error) {
     const missingTable = Boolean(error && error.isMissingTable);
@@ -187,7 +187,6 @@ async function checkTableReachable(tableName, role, requiredColumns) {
     return createTableHealth(tableName, role, {
       exists: !missingTable,
       readAccessible: false,
-      insertAccessible: false,
       message: getSafeErrorMessage(error),
     });
   }
@@ -276,6 +275,11 @@ async function checkSupabaseHealth(storageDriver) {
       storageDriver: configuredStorageDriver,
       supabaseConfigured,
       schema: config.schema,
+      writeCheck: {
+        performed: false,
+        message:
+          "This endpoint does not perform writes. Verify insert access with a safe test signup after deployment.",
+      },
       tables: {
         [config.eventsTable]: createTableHealth(
           config.eventsTable,
@@ -283,7 +287,6 @@ async function checkSupabaseHealth(storageDriver) {
           {
             exists: false,
             readAccessible: false,
-            insertAccessible: false,
             message:
               "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
           }
@@ -294,7 +297,6 @@ async function checkSupabaseHealth(storageDriver) {
           {
             exists: false,
             readAccessible: false,
-            insertAccessible: false,
             message:
               "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
           }
@@ -312,8 +314,8 @@ async function checkSupabaseHealth(storageDriver) {
   ]);
   const ok =
     configuredStorageDriver === "supabase" &&
-    eventsHealth.insertAccessible &&
-    signupsHealth.insertAccessible;
+    eventsHealth.readAccessible &&
+    signupsHealth.readAccessible;
   const messages = [];
 
   if (configuredStorageDriver !== "supabase") {
@@ -321,7 +323,7 @@ async function checkSupabaseHealth(storageDriver) {
   }
 
   [eventsHealth, signupsHealth].forEach((tableHealth) => {
-    if (!tableHealth.insertAccessible) {
+    if (!tableHealth.readAccessible) {
       messages.push(tableHealth.message);
     }
   });
@@ -331,6 +333,11 @@ async function checkSupabaseHealth(storageDriver) {
     storageDriver: configuredStorageDriver,
     supabaseConfigured,
     schema: config.schema,
+    writeCheck: {
+      performed: false,
+      message:
+        "This endpoint does not perform writes. Verify insert access with a safe test signup after deployment.",
+    },
     tables: {
       [config.eventsTable]: eventsHealth,
       [config.signupsTable]: signupsHealth,

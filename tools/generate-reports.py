@@ -41,7 +41,7 @@ def nav(prefix):
         ("reports", "reports/", "Reports", "nav-link"),
         ("compare", "compare/", "Compare", "nav-link"),
         ("faq", "faq.html", "FAQ", "nav-link"),
-        ("apply", "apply.html", "Apply", "nav-cta"),
+        ("apply", "index.html#home-signup", "Get early access", "nav-cta"),
     ]
     desktop = "\n".join(f'          <a class="{cls}" data-nav="{key}" href="{prefix}{href}">{label}</a>' for key, href, label, cls in items)
     mobile = "\n".join(f'              <a class="{cls}" data-nav="{key}" href="{prefix}{href}">{label}</a>' for key, href, label, cls in items)
@@ -78,7 +78,7 @@ def footer(prefix):
           <a href="{prefix}trust.html">Trust</a>
           <a href="{prefix}compare/">Compare</a>
           <a href="{prefix}faq.html">FAQ</a>
-          <a href="{prefix}apply.html">Apply</a>
+          <a href="{prefix}index.html#home-signup">Get early access</a>
         </div>
         <p class="footer-meta">Map it right out. Seoul may feel like a maze, but deciding where to go next should not.</p>
         <p class="footer-meta">Early access for a more context-aware Korea recommendation experience, with transparent reports, sample previews, trust pages, comparison pages, and signups.</p>
@@ -203,7 +203,7 @@ def report_page(site_url, report):
             <p>The current homepage preview shows how Miro is being shaped around area, time, vibe, and fewer choices. Reports should only be published when real data supports them.</p>
             <div class="cta-row">
               <a class="button button-primary" href="../../index.html#home-demo" data-cta="report-demo-{e(report["slug"])}">Try the Miro preview</a>
-              <a class="button button-secondary" href="../../apply.html#free-signup" data-cta="report-apply-{e(report["slug"])}">Get early access</a>
+              <a class="button button-secondary" href="../../index.html#home-signup" data-cta="report-apply-{e(report["slug"])}">Get early access</a>
             </div>
           </section>
         </article>

@@ -38,7 +38,7 @@ The browser and admin checks use these Vercel routes:
 - `POST /api/track`
 - `POST /api/signup`
 - `GET /api/supabase-health`
-- `GET /api/debug?token=...`
+- `GET /api/debug` with `Authorization: Bearer YOUR_TOKEN`
 
 The backend writes into Supabase using the server-side service role key.
 
@@ -132,8 +132,8 @@ Important:
 5. Open the Supabase SQL Editor.
 6. Run the SQL from `supabase/schema.sql`.
 7. Redeploy the Vercel project so the new environment variables are active.
-8. Open `/api/supabase-health` on the deployed domain. A healthy setup returns `ok: true` and both tables marked as reachable.
-9. Submit one test signup with safe test data such as `test+miro-123@example.com`, then confirm a row appears in Supabase Table Editor under `signup_submissions`.
+8. Open `/api/supabase-health` on the deployed domain. A healthy setup returns `ok: true` when both tables and required columns are readable with the configured server-side key. This endpoint does not perform writes.
+9. Submit one test signup with safe test data such as `test+miro-123@example.com`, then confirm rows appear in Supabase Table Editor under `signup_submissions` and `tracking_events`.
 
 The SQL enables Row Level Security on both tables and intentionally does not create broad public `SELECT` or anon `INSERT` policies. Browser users submit through Vercel API routes, and the serverless functions write to Supabase with the server-side service role key.
 
@@ -147,12 +147,16 @@ You have two simple inspection options:
    - open `tracking_events`
    - open `signup_submissions`
 2. Protected debug endpoint
-   - all records: `/api/debug?token=YOUR_TOKEN`
-   - events only: `/api/debug?token=YOUR_TOKEN&kind=events`
-   - signups only: `/api/debug?token=YOUR_TOKEN&kind=signups`
-   - optional limit: `&limit=50`
+   - prefer an `Authorization: Bearer YOUR_TOKEN` header
+   - all records: `/api/debug`
+   - events only: `/api/debug?kind=events`
+   - signups only: `/api/debug?kind=signups`
+   - optional limit: `?limit=50`
+   - query-string tokens remain supported for old manual checks, but avoid them because URLs can be logged or saved in browser history
 
 For quick setup validation, use `/api/supabase-health`. It reports whether Supabase env vars are present and whether the configured tables are reachable, but it does not expose secrets or stored user data.
+
+Tracking metadata may include a minimized `request_ip_prefix` derived from `x-forwarded-for` for coarse diagnostics. Treat it as personal data for privacy and retention decisions. Duplicate signup emails are currently allowed so repeated demand signals can be reviewed manually; add deduplication only if the product workflow changes.
 
 ## Stripe payment link
 
