@@ -198,6 +198,11 @@ li strong {
   transform: translateY(-1px);
 }
 
+.nav-cta:active,
+.button:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .nav-cta {
   background: #2563eb;
   color: #faf7f2;
@@ -547,6 +552,11 @@ li strong {
   animation: demoStepIn 180ms ease;
 }
 
+.demo-choice-group.is-exiting,
+.demo-result.is-exiting {
+  animation: demoStepOut 170ms ease both;
+}
+
 .demo-choice-group.is-complete {
   border-color: rgba(16, 185, 129, 0.28);
 }
@@ -668,6 +678,30 @@ li strong {
   color: var(--muted);
   font-size: 0.78rem;
   line-height: 1.35;
+}
+
+.demo-step-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.demo-step-actions .button {
+  flex: 1 1 8rem;
+}
+
+.demo-step-actions .button-primary {
+  width: auto;
+}
+
+.demo-step-status {
+  min-height: 1.25rem;
+  margin: 0;
+}
+
+.demo-step-status.is-error {
+  color: #b91c1c;
+  font-weight: 700;
 }
 
 .demo-card.is-demo-ready .demo-progress {
@@ -905,6 +939,18 @@ li strong {
   }
 }
 
+@keyframes demoStepOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
 .page-art {
   position: relative;
   overflow: hidden;
@@ -1090,6 +1136,11 @@ li strong {
   font-size: 0.82rem;
   font-weight: 800;
   line-height: 1;
+}
+
+.signal-chip {
+  gap: 0.4rem;
+  padding-inline: 0.9rem;
 }
 
 .flow-grid,
@@ -2126,6 +2177,11 @@ li strong {
   .demo-choice-group.is-active:not([hidden]) {
     animation: none;
   }
+
+  .demo-choice-group.is-exiting,
+  .demo-result.is-exiting {
+    animation: none;
+  }
 }
 
 /* ---------- Round 2: tactile + alive (no tracking impact) ---------- */
@@ -2195,7 +2251,8 @@ li strong {
 }
 
 /* Accent word gradient */
-.page-title .accent-word {
+.page-title .accent-word,
+.page-lead .accent-word {
   background: linear-gradient(120deg, var(--brand) 0%, var(--accent) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -2204,7 +2261,8 @@ li strong {
   display: inline-block;
 }
 
-.page-title .accent-word::after {
+.page-title .accent-word::after,
+.page-lead .accent-word::after {
   content: "";
   position: absolute;
   left: 0;

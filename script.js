@@ -108,6 +108,10 @@
       const stops = form.parentElement.querySelector("[data-demo-stops]");
       const valueChips = form.parentElement.querySelector("[data-demo-value-chips]");
       const tip = form.parentElement.querySelector("[data-demo-tip]");
+      const nextButton = form.querySelector("[data-demo-next]");
+      const backButton = form.querySelector("[data-demo-back]");
+      const startOverButton = form.querySelector("[data-demo-start-over]");
+      const stepStatus = form.querySelector("[data-demo-step-status]");
       let hasStarted = false;
       const trackedSelections = new Set();
 
@@ -123,6 +127,7 @@
 
           updateDemoSelectionPreview(form, selection);
           updateDemoInteractionState(form, placeholder, result);
+          setDemoStepStatus(stepStatus, "");
 
           if (!hasStarted && hasAnyDemoValue(form)) {
             hasStarted = true;
@@ -136,6 +141,49 @@
         });
       });
 
+      if (nextButton) {
+        nextButton.addEventListener("click", () => {
+          const currentStep = getDemoCurrentStep(form);
+
+          if (!validateDemoStep(form, currentStep, stepStatus)) {
+            return;
+          }
+
+          if (currentStep === 1) {
+            setDemoCurrentStep(form, 2, placeholder, result, {
+              animate: true,
+              focus: true,
+            });
+            return;
+          }
+
+          setDemoCurrentStep(form, 3, placeholder, result, {
+            animate: true,
+            focus: true,
+          });
+        });
+      }
+
+      if (backButton) {
+        backButton.addEventListener("click", () => {
+          const currentStep = getDemoCurrentStep(form);
+          const nextStep = currentStep === 3 ? 2 : Math.max(1, currentStep - 1);
+
+          setDemoStepStatus(stepStatus, "");
+          setDemoCurrentStep(form, nextStep, placeholder, result, {
+            animate: true,
+            focus: true,
+          });
+        });
+      }
+
+      if (startOverButton) {
+        startOverButton.addEventListener("click", () => {
+          resetDemoFlow(form, selection, placeholder, result, stepStatus);
+        });
+      }
+
+      form.dataset.demoCurrentStep = form.dataset.demoCurrentStep || "1";
       updateDemoInteractionState(form, placeholder, result);
 
       form.addEventListener("submit", (event) => {
@@ -223,6 +271,7 @@
         }
 
         updateDemoInteractionState(form, placeholder, result);
+        setDemoStepStatus(stepStatus, "");
 
         void trackInteraction("demo_result_viewed", "Demo result viewed", {
           module: form.dataset.demoForm || "demo",
@@ -648,35 +697,175 @@
     });
   }
 
+  function getDemoCurrentStep(form) {
+    const parsedStep = Number(form.dataset.demoCurrentStep || "1");
+
+    if (!Number.isFinite(parsedStep)) {
+      return 1;
+    }
+
+    return Math.min(3, Math.max(1, parsedStep));
+  }
+
+  function setDemoCurrentStep(form, step, placeholder, result, options = {}) {
+    const nextStep = Math.min(3, Math.max(1, step));
+    const currentStep = getDemoCurrentStep(form);
+    const visibleElements = getDemoVisibleStepElements(form, result);
+
+    const applyStep = () => {
+      visibleElements.forEach((element) => {
+        element.classList.remove("is-exiting");
+      });
+
+      form.dataset.demoCurrentStep = String(nextStep);
+
+      if (placeholder) {
+        placeholder.hidden = true;
+      }
+
+      if (result && nextStep !== 3) {
+        result.hidden = true;
+        result.classList.remove("is-revealed", "is-needs-refresh");
+      }
+
+      updateDemoInteractionState(form, placeholder, result);
+
+      if (options.focus) {
+        focusDemoStep(form);
+      }
+
+      if (typeof options.afterChange === "function") {
+        options.afterChange();
+      }
+    };
+
+    if (!options.animate || currentStep === nextStep || visibleElements.length === 0) {
+      applyStep();
+      return;
+    }
+
+    visibleElements.forEach((element) => {
+      element.classList.add("is-exiting");
+    });
+
+    window.setTimeout(applyStep, 170);
+  }
+
+  function getDemoVisibleStepElements(form, result) {
+    const currentStep = getDemoCurrentStep(form);
+
+    if (currentStep === 3 && result && !result.hidden) {
+      return [result];
+    }
+
+    return Array.from(form.querySelectorAll("[data-demo-group]")).filter(
+      (group) => !group.hidden
+    );
+  }
+
+  function validateDemoStep(form, currentStep, status) {
+    const requiredFieldsByStep = {
+      1: ["area"],
+      2: ["time"],
+      3: ["vibe"],
+    };
+    const requiredFields = requiredFieldsByStep[currentStep] || [];
+    const values = getDemoValues(form);
+    const missingField = requiredFields.find((fieldName) => !values[fieldName]);
+
+    if (!missingField) {
+      setDemoStepStatus(status, "");
+      return true;
+    }
+
+    const label =
+      missingField === "area" ? "an area" : missingField === "vibe" ? "a vibe" : "a time";
+    setDemoStepStatus(status, `Choose ${label} to continue.`, true);
+
+    const firstInput = form.querySelector(`input[name="${missingField}"]`);
+    if (firstInput) {
+      firstInput.focus();
+    }
+
+    return false;
+  }
+
+  function resetDemoFlow(form, selection, placeholder, result, status) {
+    form.reset();
+    form.dataset.demoCurrentStep = "1";
+
+    if (result) {
+      result.hidden = true;
+      result.classList.remove("is-revealed", "is-needs-refresh", "is-building");
+    }
+
+    if (placeholder) {
+      placeholder.hidden = true;
+    }
+
+    updateDemoSelectionPreview(form, selection);
+    setDemoStepStatus(status, "");
+    updateDemoInteractionState(form, placeholder, result);
+    focusDemoStep(form);
+  }
+
+  function setDemoStepStatus(status, message, isError = false) {
+    if (!status) {
+      return;
+    }
+
+    status.textContent = message;
+    status.classList.toggle("is-error", Boolean(isError && message));
+  }
+
+  function focusDemoStep(form) {
+    const firstInput = form.querySelector("[data-demo-group]:not([hidden]) input");
+
+    if (!firstInput) {
+      return;
+    }
+
+    try {
+      firstInput.focus({ preventScroll: true });
+    } catch (error) {
+      firstInput.focus();
+    }
+  }
+
   function updateDemoInteractionState(form, placeholder, result) {
     const values = getDemoValues(form);
     const selectedFields = DEMO_FIELDS.filter((fieldName) => Boolean(values[fieldName]));
     const selectedCount = selectedFields.length;
-    const nextFieldIndex = DEMO_FIELDS.findIndex((fieldName) => !values[fieldName]);
-    const currentStep =
-      nextFieldIndex === -1 ? DEMO_FIELDS.length + 1 : nextFieldIndex + 1;
-    const activeField = nextFieldIndex === -1 ? "" : DEMO_FIELDS[currentStep - 1];
+    const currentStep = getDemoCurrentStep(form);
     const card = form.closest(".demo-card");
     const current = form.querySelector("[data-demo-progress-current]");
     const fill = form.querySelector("[data-demo-progress-fill]");
     const submitButton = form.querySelector("[type='submit']");
+    const nextButton = form.querySelector("[data-demo-next]");
+    const backButton = form.querySelector("[data-demo-back]");
+    const startOverButton = form.querySelector("[data-demo-start-over]");
+    const isResultVisible = Boolean(result && !result.hidden);
 
     if (card) {
       card.classList.toggle("is-demo-started", selectedCount > 0);
       card.classList.toggle("is-demo-ready", selectedCount === DEMO_FIELDS.length);
+      card.classList.toggle("is-demo-result-step", isResultVisible);
     }
 
     if (current) {
-      current.textContent = String(selectedCount);
+      current.textContent = String(currentStep);
     }
 
     if (fill) {
-      fill.style.width = `${(selectedCount / DEMO_FIELDS.length) * 100}%`;
+      fill.style.width = `${(currentStep / DEMO_FIELDS.length) * 100}%`;
     }
 
     form.querySelectorAll("[data-demo-group]").forEach((group) => {
       const fieldName = group.dataset.demoGroup || "";
-      const isActive = fieldName === activeField;
+      const isActive =
+        (currentStep === 1 && fieldName === "area") ||
+        (currentStep === 2 && fieldName === "time") ||
+        (currentStep === 3 && fieldName === "vibe" && !isResultVisible);
       group.classList.toggle("is-complete", Boolean(values[fieldName]));
       group.classList.toggle("is-active", isActive);
       group.hidden = !isActive;
@@ -690,17 +879,44 @@
         "is-complete",
         isAnswer ? selectedCount === DEMO_FIELDS.length : Boolean(values[stepName])
       );
-      step.classList.toggle("is-active", isAnswer && selectedCount === DEMO_FIELDS.length);
+      step.classList.toggle(
+        "is-active",
+        isAnswer
+          ? isResultVisible
+          : (currentStep === 1 && stepName === "area") ||
+              (currentStep === 2 && stepName === "time") ||
+              (currentStep === 3 && stepName === "vibe" && !isResultVisible)
+      );
     });
+
+    if (placeholder) {
+      placeholder.hidden = true;
+    }
 
     if (placeholder && (!result || result.hidden)) {
       updateDemoLivePreview(placeholder, values, selectedCount);
     }
 
+    if (nextButton) {
+      nextButton.hidden = currentStep === 3;
+      nextButton.setAttribute("aria-hidden", currentStep === 3 ? "true" : "false");
+      nextButton.dataset.cta = "home-demo-next";
+    }
+
+    if (backButton) {
+      backButton.hidden = currentStep === 1;
+      backButton.setAttribute("aria-hidden", currentStep === 1 ? "true" : "false");
+    }
+
+    if (startOverButton) {
+      startOverButton.hidden = currentStep !== 3;
+      startOverButton.setAttribute("aria-hidden", currentStep === 3 ? "false" : "true");
+    }
+
     if (submitButton) {
-      const isReady = selectedCount === DEMO_FIELDS.length;
-      submitButton.hidden = !isReady;
-      submitButton.setAttribute("aria-hidden", isReady ? "false" : "true");
+      const isReadyForResult = currentStep === 3 && Boolean(values.vibe) && !isResultVisible;
+      submitButton.hidden = !isReadyForResult;
+      submitButton.setAttribute("aria-hidden", isReadyForResult ? "false" : "true");
       submitButton.textContent =
         result && !result.hidden ? "Update sample Miro answer" : "See my sample Miro answer";
     }
@@ -1646,29 +1862,35 @@
         behavior: reduced ? "auto" : "smooth",
         block: "center",
       });
-      const submitBtn = form.querySelector("[type='submit']");
-      if (submitBtn && !reduced) {
-        submitBtn.classList.add("is-attn");
-        setTimeout(() => submitBtn.classList.remove("is-attn"), 1200);
+      const actionButton =
+        form.querySelector("[type='submit']:not([hidden])") ||
+        form.querySelector("[data-demo-next]:not([hidden])") ||
+        form.querySelector("[data-demo-next]") ||
+        form.querySelector("[type='submit']");
+      if (actionButton && !reduced) {
+        actionButton.classList.add("is-attn");
+        setTimeout(() => actionButton.classList.remove("is-attn"), 1200);
       }
       fab.classList.remove("is-visible");
     });
   }
 
-  // 8. Auto-focus submit button the first time all 3 picks land
+  // 8. Auto-focus the route action the first time all 3 picks land
   function initFocusAdvance() {
     document.querySelectorAll("[data-demo-form]").forEach((form) => {
-      const submitBtn = form.querySelector("[type='submit']");
-      if (!submitBtn) return;
       let advanced = false;
 
       const check = () => {
         const fd = new FormData(form);
         const filled = FIELDS.every((f) => fd.get(f));
-        if (filled && !advanced) {
+        const actionButton =
+          form.querySelector("[type='submit']:not([hidden])") ||
+          form.querySelector("[data-demo-next]:not([hidden])");
+
+        if (filled && !advanced && actionButton) {
           advanced = true;
           // Defer so the radio's own focus completes first.
-          setTimeout(() => submitBtn.focus({ preventScroll: true }), 120);
+          setTimeout(() => actionButton.focus({ preventScroll: true }), 120);
         }
         if (!filled) advanced = false;
       };
