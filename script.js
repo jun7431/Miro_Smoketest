@@ -652,7 +652,10 @@
     const values = getDemoValues(form);
     const selectedFields = DEMO_FIELDS.filter((fieldName) => Boolean(values[fieldName]));
     const selectedCount = selectedFields.length;
-    const activeField = DEMO_FIELDS.find((fieldName) => !values[fieldName]) || "vibe";
+    const nextFieldIndex = DEMO_FIELDS.findIndex((fieldName) => !values[fieldName]);
+    const currentStep =
+      nextFieldIndex === -1 ? DEMO_FIELDS.length + 1 : nextFieldIndex + 1;
+    const activeField = nextFieldIndex === -1 ? "" : DEMO_FIELDS[currentStep - 1];
     const card = form.closest(".demo-card");
     const current = form.querySelector("[data-demo-progress-current]");
     const fill = form.querySelector("[data-demo-progress-fill]");
@@ -673,8 +676,11 @@
 
     form.querySelectorAll("[data-demo-group]").forEach((group) => {
       const fieldName = group.dataset.demoGroup || "";
+      const isActive = fieldName === activeField;
       group.classList.toggle("is-complete", Boolean(values[fieldName]));
-      group.classList.toggle("is-active", fieldName === activeField);
+      group.classList.toggle("is-active", isActive);
+      group.hidden = !isActive;
+      group.setAttribute("aria-hidden", isActive ? "false" : "true");
     });
 
     form.querySelectorAll("[data-demo-flow-step]").forEach((step) => {
@@ -692,6 +698,9 @@
     }
 
     if (submitButton) {
+      const isReady = selectedCount === DEMO_FIELDS.length;
+      submitButton.hidden = !isReady;
+      submitButton.setAttribute("aria-hidden", isReady ? "false" : "true");
       submitButton.textContent =
         result && !result.hidden ? "Update sample Miro answer" : "See my sample Miro answer";
     }

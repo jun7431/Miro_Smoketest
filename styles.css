@@ -543,6 +543,10 @@ li strong {
   box-shadow: 0 14px 26px rgba(37, 99, 235, 0.08);
 }
 
+.demo-choice-group.is-active:not([hidden]) {
+  animation: demoStepIn 180ms ease;
+}
+
 .demo-choice-group.is-complete {
   border-color: rgba(16, 185, 129, 0.28);
 }
@@ -878,6 +882,18 @@ li strong {
 }
 
 @keyframes demoResultIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes demoStepIn {
   from {
     opacity: 0;
     transform: translateY(6px);
@@ -2104,6 +2120,10 @@ li strong {
   }
 
   .demo-result.is-revealed {
+    animation: none;
+  }
+
+  .demo-choice-group.is-active:not([hidden]) {
     animation: none;
   }
 }
