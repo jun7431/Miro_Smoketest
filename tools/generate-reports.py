@@ -19,7 +19,7 @@ def head(title, desc, canonical, css, js, indexable=True):
   <meta name="description" content="{e(desc)}">
   <!-- SEO: Phase 1 foundation -->
   <link rel="canonical" href="{e(canonical)}">
-{robots}  <meta property="og:site_name" content="Miro">
+{robots}  <meta property="og:site_name" content="Kandid Spot">
   <meta property="og:title" content="{e(title)}">
   <meta property="og:description" content="{e(desc)}">
   <meta property="og:type" content="website">
@@ -36,7 +36,7 @@ def head(title, desc, canonical, css, js, indexable=True):
 def nav(prefix):
     items = [
         ("home", "index.html", "Home", "nav-link"),
-        ("about", "about.html", "About Miro", "nav-link"),
+        ("about", "about.html", "About Kandid Spot", "nav-link"),
         ("how", "how-it-works.html", "How It Works", "nav-link"),
         ("reports", "reports/", "Reports", "nav-link"),
         ("compare", "compare/", "Compare", "nav-link"),
@@ -48,7 +48,7 @@ def nav(prefix):
     return f'''  <header class="site-header">
     <div class="container">
       <div class="site-bar">
-        <a class="brand-mark" href="{prefix}index.html">Miro</a>
+        <a class="brand-mark" href="{prefix}index.html">Kandid Spot</a>
         <nav class="site-nav site-nav-desktop" aria-label="Primary">
 {desktop}
         </nav>
@@ -69,10 +69,10 @@ def footer(prefix):
     return f'''  <footer class="site-footer">
     <div class="container">
       <div class="footer-shell">
-        <div class="footer-mark">Miro</div>
+        <div class="footer-mark">Kandid Spot</div>
         <div class="footer-links">
           <a href="{prefix}index.html">Home</a>
-          <a href="{prefix}about.html">About Miro</a>
+          <a href="{prefix}about.html">About Kandid Spot</a>
           <a href="{prefix}how-it-works.html">How It Works</a>
           <a href="{prefix}reports/">Reports</a>
           <a href="{prefix}trust.html">Trust</a>
@@ -102,7 +102,7 @@ def reports_index(site_url, reports):
     cards = "\n".join(report_card(report) for report in reports)
     return f'''<!DOCTYPE html>
 <html lang="en">
-{head("Miro Reports | Data and insight templates", "Transparent report templates for future Miro original data assets. Draft reports are clearly marked until real source data is available.", site_url + "/reports/", "../styles.css", "../script.js")}
+{head("Kandid Spot Reports | Data and insight templates", "Transparent report templates for future Kandid Spot original data assets. Draft reports are clearly marked until real source data is available.", site_url + "/reports/", "../styles.css", "../script.js")}
 <body data-page="reports">
 {nav("../")}
   <main class="page-main">
@@ -111,9 +111,9 @@ def reports_index(site_url, reports):
         <div class="page-copy reading-width">
           <span class="eyebrow">Reports</span>
           <h1 class="page-title guide-title">Transparent reports, only when the data exists.</h1>
-          <p class="page-lead">Miro will use this section for original data assets about Korea travel recommendations, local signals, and visitor friction. No findings are published here unless they can be traced to a real, documented source.</p>
+          <p class="page-lead">Kandid Spot will use this section for original data assets about Korea travel recommendations, local signals, and visitor friction. No findings are published here unless they can be traced to a real, documented source.</p>
           <div class="cta-row">
-            <a class="button button-primary" href="../index.html#home-demo" data-cta="reports-index-demo">Try the Miro preview</a>
+            <a class="button button-primary" href="../index.html#home-demo" data-cta="reports-index-demo">Try the Kandid Spot preview</a>
             <a class="button button-secondary" href="../trust.html" data-cta="reports-index-trust">Read the trust notes</a>
           </div>
         </div>
@@ -192,17 +192,17 @@ def report_page(site_url, report):
             <ul class="guide-link-list">
               <li><a href="../../reports/">Reports index</a></li>
               <li><a href="../../trust.html">Trust and transparency</a></li>
-              <li><a href="../../how-it-works.html">How Miro works</a></li>
-              <li><a href="../../compare/">Compare Miro with other tools</a></li>
+              <li><a href="../../how-it-works.html">How Kandid Spot works</a></li>
+              <li><a href="../../compare/">Compare Kandid Spot with other tools</a></li>
               <li><a href="../../index.html">Try the homepage preview</a></li>
             </ul>
           </section>
           <section class="closing-panel guide-cta" data-section="report-cta">
-            <span class="section-label">Try Miro</span>
+            <span class="section-label">Try Kandid Spot</span>
             <h2>See the product direction first.</h2>
-            <p>The current homepage preview shows how Miro is being shaped around area, time, vibe, and fewer choices. Reports should only be published when real data supports them.</p>
+            <p>The current homepage preview shows how Kandid Spot is being shaped around area, time, vibe, and fewer choices. Reports should only be published when real data supports them.</p>
             <div class="cta-row">
-              <a class="button button-primary" href="../../index.html#home-demo" data-cta="report-demo-{e(report["slug"])}">Try the Miro preview</a>
+              <a class="button button-primary" href="../../index.html#home-demo" data-cta="report-demo-{e(report["slug"])}">Try the Kandid Spot preview</a>
               <a class="button button-secondary" href="../../index.html#home-signup" data-cta="report-apply-{e(report["slug"])}">Get early access</a>
             </div>
           </section>

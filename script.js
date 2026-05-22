@@ -365,7 +365,7 @@
         }
 
         if (!consentInput || !consentInput.checked) {
-          setStatus(status, "Please confirm that Miro can contact you with updates.", true);
+          setStatus(status, "Please confirm that Kandid Spot can contact you with updates.", true);
           if (consentInput) {
             consentInput.focus();
           }
@@ -918,7 +918,7 @@
       submitButton.hidden = !isReadyForResult;
       submitButton.setAttribute("aria-hidden", isReadyForResult ? "false" : "true");
       submitButton.textContent =
-        result && !result.hidden ? "Update sample Miro answer" : "See my sample Miro answer";
+        result && !result.hidden ? "Update sample Kandid Spot answer" : "See my sample Kandid Spot answer";
     }
   }
 
@@ -964,7 +964,7 @@
     }
 
     if (selectedCount === 1) {
-      return "Miro is reading context";
+      return "Kandid Spot is reading context";
     }
 
     if (selectedCount === 2) {
@@ -1181,7 +1181,7 @@
               detail: "Finish with one obvious next move instead of another decision tree.",
             },
           ],
-          tip: "Miro works best when it narrows the neighborhood into one route, not ten choices.",
+          tip: "Kandid Spot works best when it narrows the neighborhood into one route, not ten choices.",
         },
       },
     },
@@ -1270,7 +1270,7 @@
               detail: "End where it's easy to either stay longer or move on cleanly.",
             },
           ],
-          tip: "Miro is strongest when the answer feels selective, not encyclopedic.",
+          tip: "Kandid Spot is strongest when the answer feels selective, not encyclopedic.",
         },
       },
     },
@@ -1359,7 +1359,7 @@
               detail: "End without reopening the search from scratch.",
             },
           ],
-          tip: "Miro is most useful when the neighborhood is broad but your time is not.",
+          tip: "Kandid Spot is most useful when the neighborhood is broad but your time is not.",
         },
       },
     },
@@ -1624,7 +1624,7 @@
         let html = "";
         if (filled === 0) {
           html =
-            'Pick three things and Miro will draft a sample route<span class="demo-preview-cursor" aria-hidden="true"></span>';
+            'Pick three things and Kandid Spot will draft a sample route<span class="demo-preview-cursor" aria-hidden="true"></span>';
         } else if (filled === 3) {
           html = `Tap below for your <strong>${escapeHtml(tL)} ${escapeHtml(vL)} ${escapeHtml(aL)}</strong> sample.`;
         } else {

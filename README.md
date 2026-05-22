@@ -1,6 +1,6 @@
-# Miro MVP Demo + Tracking
+# Kandid Spot MVP Demo + Tracking
 
-This project keeps Miro as the main smoke-test shell, keeps the existing Vercel API routes and Supabase persistence, and selectively borrows the smallest useful demo layer from `Niro_Local`: a fast area/time/vibe input flow plus an immediate 3-pick sample result on the homepage.
+This project keeps Kandid Spot as the main smoke-test shell, keeps the existing Vercel API routes and Supabase persistence, and selectively borrows the smallest useful demo layer from `Niro_Local`: a fast area/time/vibe input flow plus an immediate 3-pick sample result on the homepage.
 
 ## What is tracked
 
@@ -76,7 +76,7 @@ Logical tables:
 
 The SQL for these tables lives in `supabase/schema.sql`.
 
-## What came from Niro_Local vs Miro
+## What came from Niro_Local vs Kandid Spot
 
 Imported from `Niro_Local`:
 
@@ -86,7 +86,7 @@ Imported from `Niro_Local`:
 
 Kept from `Miro_Smoketest`:
 
-- Miro branding and page structure
+- Kandid Spot branding and page structure
 - Vercel-friendly static + API layout
 - tracking endpoints
 - signup capture flow
@@ -195,10 +195,10 @@ Manual follow-ups:
 
 ## Phase 2 answer-oriented GEO layer
 
-The site now includes an answerability layer intended to help search engines and AI answer engines understand Miro without inventing claims:
+The site now includes an answerability layer intended to help search engines and AI answer engines understand Kandid Spot without inventing claims:
 
 - Clear product explanation
-  - the homepage, About page, How It Works page, FAQ, Trust page, comparison pages, and reports index describe Miro as an early-access Korea local travel recommendation product for international travelers
+  - the homepage, About page, How It Works page, FAQ, Trust page, comparison pages, and reports index describe Kandid Spot as an early-access Korea local travel recommendation product for international travelers
   - copy focuses on area, time, mood, local signals, and context-aware recommendations rather than unsupported performance claims
 - Question-and-answer structure
   - `faq.html` presents core product and trust questions in visible Q&A format
